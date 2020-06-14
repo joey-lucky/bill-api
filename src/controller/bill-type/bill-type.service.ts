@@ -21,8 +21,10 @@ export  class BillTypeService extends BaseService implements RestService {
         await this.assertEntityIdExist(BcBillType, id);
         const entity: BcBillType = this.parseToEntity(BcBillType, data);
         entity.id = id;
-        await this.updateEntity(entity);
-        await entity.reload();
+        entity.updateTime = new Date();
+        entity.updateBy = this.getCtxUserId();
+        await this.deleteEntity(BcBillType,entity.id);
+        await this.create(entity);
         return entity;
     }
 
