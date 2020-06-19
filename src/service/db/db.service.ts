@@ -137,4 +137,17 @@ export class DbService {
         return this.manager.delete(targetOrEntity, criteria);
     }
 
+    toEntity<Entity>(entityClass: ObjectType<Entity>,obj:any):Entity{
+        // @ts-ignore
+        let entity = new entityClass();
+        for (let key of Object.keys(obj)) {
+            let columnName = key.replace(/_[0-9a-zA-Z]/g,(substring)=>substring.substr(1).toUpperCase())
+            entity[columnName] = obj[key];
+        }
+        return entity;
+    }
+
+    toEntities<Entity>(entityClass: ObjectType<Entity>,obj:any[]):Entity[]{
+        return obj.map(item => this.toEntity(entityClass, item));
+    }
 }

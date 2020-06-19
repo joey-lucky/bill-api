@@ -3,14 +3,21 @@ import {
     ColumnOptions,
     Entity as TypeOrmEntity,
     EntityOptions,
+    JoinColumn as TypeOrmJoinColumn,
+    JoinColumnOptions,
     ViewEntity as TypeOrmViewEntity
 } from "typeorm";
 import * as moment from "moment";
 import {ViewEntityOptions} from "typeorm/decorator/options/ViewEntityOptions";
 
+// userId --> user_id
+function parseCamelToColumnName(propertyName: string) {
+    return propertyName.replace(/([A-Z]|[0-9]+)/g, (str) => "_" + str.toLowerCase());
+}
+
 export function Column(options: ColumnOptions = {}) {
     return function (object: Object, propertyName: string) {
-        options.name = propertyName.replace(/([A-Z]|[0-9]+)/g, (str) => "_" + str.toLowerCase());
+        options.name = parseCamelToColumnName(propertyName);
         let defOptions: ColumnOptions = {
             nullable: true
         };
@@ -18,7 +25,17 @@ export function Column(options: ColumnOptions = {}) {
     };
 }
 
-export function DateTimeColumn() {
+export function JoinColumn(options: JoinColumnOptions = {}) {
+    return function (object: Object, propertyName: string) {
+        let defOpt: JoinColumnOptions = {};
+        defOpt.name = parseCamelToColumnName(propertyName) + "_id";
+        defOpt.referencedColumnName = "id";
+        let mergeOpt = {...defOpt, ...options};
+        TypeOrmJoinColumn(mergeOpt)(object, propertyName);
+    };
+}
+
+export function DateTimeColumn(options:ColumnOptions={}) {
     return Column({
         type: "datetime",
         nullable: true,
@@ -31,6 +48,7 @@ export function DateTimeColumn() {
                 return date;
             },
         },
+        ...options
     });
 }
 

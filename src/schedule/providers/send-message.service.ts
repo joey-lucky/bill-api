@@ -14,14 +14,6 @@ export class SendMessageService implements Schedule {
     @Inject()
     private readonly httpService: HttpService
 
-    static get schedule() {
-        return {
-            interval: "60s", // 60 分钟间隔
-            type: "worker", // 指定所有的 worker 都需要执行
-            immediate: false,
-        };
-    }
-
     subscribe = async () => {
         try {
             const entityList: BdSendMessage[] = await this.dbService.find(BdSendMessage, {

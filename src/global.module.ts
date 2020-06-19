@@ -8,10 +8,21 @@ import {APP_INTERCEPTOR} from "@nestjs/core";
 import {LoggerInterceptor} from "./interceptor/logger.interceptor";
 import {ExceptionInterceptor} from "./interceptor/exception.interceptor";
 import {TokenInterceptor} from "./interceptor/token.interceptor";
+import {TypeOrmModule} from "@nestjs/typeorm";
+import {tables, views} from "./database";
 
 @Global()
 @Module({
-    imports: [],
+    imports: [
+        TypeOrmModule.forRootAsync({
+            inject: [ConfigService,LoggerService],
+            useFactory: (configService: ConfigService,loggerService:LoggerService) => ({
+                ...configService.getTypeormConfig(),
+                entities: [...tables, ...views],
+                logger:loggerService.dbLogger
+            }),
+        }),
+    ],
     providers: [
         DbService,
         ConfigService,

@@ -19,6 +19,11 @@ export class BaseService {
         return entity;
     }
 
+    protected async assertEntityHasNoChildren<Entity extends BaseEntity>(entityClass: ObjectType<Entity>, id: string){
+        let children  = await this.dbService.find(entityClass,{where:{parentId: id}})
+        Assert.isTrue(children.length === 0, "has children");
+    }
+
     protected getCtxUserId() {
         // ts-ignore
         return this.request.user.id;

@@ -6,15 +6,6 @@ import {Schedule} from "../schedule.domain";
 
 @Injectable()
 export class CalculateBalanceService implements Schedule {
-    static get schedule() {
-        return {
-            interval: "60s", // 60 分钟间隔
-            type: "worker", // 指定所有的 worker 都需要执行
-            immediate: false,
-            disable: false,
-        };
-    }
-
     @Inject()
     private readonly dbService:DbService;
     @Inject()

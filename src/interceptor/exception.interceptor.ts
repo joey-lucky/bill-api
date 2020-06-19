@@ -12,14 +12,18 @@ export class ExceptionInterceptor implements NestInterceptor {
 
     async intercept(context: ExecutionContext, next: CallHandler<any>): Promise<Observable<any>> {
         return next.handle().pipe(
-            catchError(e => {
+            catchError((e) => {
                 let res = context.switchToHttp().getResponse();
+                let message:string = e.message || "";
                 if (e instanceof HttpException) {
                     res.statusCode = e.getStatus();
                 } else {
                     res.statusCode = HttpStatus.BAD_REQUEST;
                 }
-                return of(this.responseService.fail(e.message));
+                if (message.includes("ER_ROW_IS_REFERENCED")) {
+                    message = "外键约束" + " ER_ROW_IS_REFERENCED";
+                }
+                return of(this.responseService.fail(message));
             })
         )
     }

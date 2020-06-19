@@ -4,6 +4,13 @@ import {CalculateBalanceService} from "./providers/calculate-balance.service";
 import {GenerateTokenService} from "./providers/generate-token.service";
 import {SendMessageService} from "./providers/send-message.service";
 import {Cron, Interval, ScheduleModule as NestScheduleModule} from '@nestjs/schedule';
+import {ConfigService} from "../service/config";
+import {CrawlFundPriceService} from "./fund-providers/crawl-fund-price.service";
+import {CrawlFundConfigService} from "./fund-providers/crawl-fund-config.service";
+import {CompleteBuyFundService} from "./fund-providers/complete-buy-fund.service";
+import {FundModule} from "../controller/invest/fund/fund.module";
+import {CompleteSellFundService} from "./fund-providers/complete-sell-fund.service";
+import {FundService} from "../controller/invest/fund/fund.service";
 
 @Module({
     providers:[
@@ -11,38 +18,46 @@ import {Cron, Interval, ScheduleModule as NestScheduleModule} from '@nestjs/sche
         CalculateBalanceService,
         GenerateTokenService,
         SendMessageService,
+        CrawlFundPriceService,
+        CrawlFundConfigService,
+        CompleteBuyFundService,
+        CompleteSellFundService,
+        FundService,
     ],
     imports: [
         NestScheduleModule.forRoot(),
-        HttpModule
+        HttpModule,
+        FundModule,
     ],
 })
 export class ScheduleModule {
     constructor(
+        private readonly configService: ConfigService,
         private readonly billDayReportService: BillDayReportService,
         private readonly calculateBalanceService: CalculateBalanceService,
         private readonly generateTokenService: GenerateTokenService,
         private readonly sendMessageService: SendMessageService,
+        private readonly crawlFundPriceService: CrawlFundPriceService,
     ) {
     }
 
     @Cron("0 0 9 * * *")
     async subscribeBillDayReport() {
-        await this.billDayReportService.subscribe();
+         this.configService.getSchedule() && await this.billDayReportService.subscribe();
     }
 
     @Interval(60 * 1000)
     async subscribeCalculateBalance() {
-        await this.calculateBalanceService.subscribe();
+        this.configService.getSchedule() &&  await this.calculateBalanceService.subscribe();
     }
 
     @Interval(60 * 1000)
     async subscribeGenerateToken() {
-        await this.generateTokenService.subscribe();
+        this.configService.getSchedule() && await this.generateTokenService.subscribe();
     }
 
     @Interval(60 * 1000)
     async subscribeSendMessage() {
-        await this.sendMessageService.subscribe();
+        this.configService.getSchedule() &&  await this.sendMessageService.subscribe();
     }
 }

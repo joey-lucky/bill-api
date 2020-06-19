@@ -12,16 +12,6 @@ export class BillDayReportService implements Schedule {
     @Inject()
     private readonly loggerService: LoggerService;
 
-    static get schedule() {
-        return {
-            // 每三小时准点执行一次
-            cron: "0 0 9 * * *",
-            // interval: "60000s", // 60 分钟间隔
-            type: "worker", // 指定所有的 worker 都需要执行
-            immediate: false,
-        };
-    }
-
     subscribe = async () => {
         try {
             const start = moment().add(-1, "day").format("YYYY-MM-DD");
