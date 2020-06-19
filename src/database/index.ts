@@ -14,6 +14,9 @@ import {BcBillTemplateView} from "./view/BcBillTemplateView";
 import {BdStatBillMView} from "./view/BdStatBillMView";
 import {BcBillTemplate} from "./entity/BcBillTemplate";
 import {BdSendMessage} from "./entity/BdSendMessage";
+import {BcFund} from "./fund/BcFund";
+import {BcFundType} from "./fund/BcFundType";
+import {BdFundIopv} from "./fund/BdFundIopv";
 export * from "./base";
 
 export const tables = [
@@ -27,6 +30,9 @@ export const tables = [
     BcToken,
     BdBill,
     BdSendMessage,
+    BcFund,
+    BcFundType,
+    BdFundIopv,
 ];
 
 export const views = [
@@ -55,9 +61,9 @@ export {
     BcDictDataView,
     BdBillView,
     BdStatBillMView,
+    BcFund,
+    BcFundType,
+    BdFundIopv,
 };
-
-
-
 
 export {PageInfo} from "../service/response";
