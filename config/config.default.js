@@ -15,5 +15,6 @@ module.exports = {
             "info",
             "log"
         ],
-    }
+    },
+    schedule:true,
 };

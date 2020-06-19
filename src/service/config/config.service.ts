@@ -3,6 +3,7 @@ import * as prodConfig from "../../../config/config.prod.js";
 import * as devConfig from "../../../config/config.dev.js";
 import * as testConfig from "../../../config/config.test.js";
 import {Injectable} from "@nestjs/common";
+import {type} from "os";
 
 @Injectable()
 export class ConfigService {
@@ -23,6 +24,10 @@ export class ConfigService {
 
     isProd() {
         return !this.nodeEnv || this.nodeEnv === "production";
+    }
+
+    getSchedule(){
+        return this.config.schedule;
     }
 
     isDev() {
@@ -48,7 +53,7 @@ export class ConfigService {
         if (!defValue) {
             return value;
         }
-        if (typeof value === "string") {
+        if (typeof value === "string" || typeof value === "boolean" || typeof value === "number") {
             return value;
         } else {
             return {...defValue, ...value};

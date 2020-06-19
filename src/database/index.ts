@@ -14,9 +14,10 @@ import {BcBillTemplateView} from "./view/BcBillTemplateView";
 import {BdStatBillMView} from "./view/BdStatBillMView";
 import {BcBillTemplate} from "./entity/BcBillTemplate";
 import {BdSendMessage} from "./entity/BdSendMessage";
-import {BcFund} from "./fund/BcFund";
-import {BcFundType} from "./fund/BcFundType";
-import {BdFundIopv} from "./fund/BdFundIopv";
+import {BcFund} from "./entity/fund/BcFund";
+import {BcFundType} from "./entity/fund/BcFundType";
+import {BdFundIopv} from "./entity/fund/BdFundIopv";
+import {BcFundBussType} from "./entity/fund/BcFundBussType";
 export * from "./base";
 
 export const tables = [
@@ -33,6 +34,7 @@ export const tables = [
     BcFund,
     BcFundType,
     BdFundIopv,
+    BcFundBussType,
 ];
 
 export const views = [
@@ -64,6 +66,7 @@ export {
     BcFund,
     BcFundType,
     BdFundIopv,
+    BcFundBussType,
 };
 
 export {PageInfo} from "../service/response";

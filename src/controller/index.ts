@@ -9,6 +9,8 @@ import {CardTypeModule} from "./card-type/card-type.module";
 import {StatBillMModule} from "./stat-bill-m/stat-bill-m.module";
 import {SafeModule} from "./safe/safe.module";
 import {HomeModule} from "./app/home/home.module";
+import {FundBussTypeModule} from "./invest/fund-buss-type/fund-buss-type.module";
+import {FundTypeModule} from "./invest/fund-type/fund-type.module";
 
 export const routes:any[] = [
     BillModule,
@@ -23,4 +25,7 @@ export const routes:any[] = [
 
     SafeModule,
     HomeModule,
+
+    FundBussTypeModule,
+    FundTypeModule,
 ];

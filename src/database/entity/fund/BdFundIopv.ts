@@ -1,5 +1,5 @@
-import {Column, DateTimeColumn, Entity} from "../decorator";
-import {BaseEntity} from "../base";
+import {Column, DateTimeColumn, Entity} from "../../decorator";
+import {BaseEntity} from "../../base";
 
 @Entity()
 export class BdFundIopv extends BaseEntity {

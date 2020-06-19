@@ -4,6 +4,7 @@ import {CalculateBalanceService} from "./providers/calculate-balance.service";
 import {GenerateTokenService} from "./providers/generate-token.service";
 import {SendMessageService} from "./providers/send-message.service";
 import {Cron, Interval, ScheduleModule as NestScheduleModule} from '@nestjs/schedule';
+import {ConfigService} from "../service/config";
 
 @Module({
     providers:[
@@ -19,6 +20,7 @@ import {Cron, Interval, ScheduleModule as NestScheduleModule} from '@nestjs/sche
 })
 export class ScheduleModule {
     constructor(
+        private readonly configService: ConfigService,
         private readonly billDayReportService: BillDayReportService,
         private readonly calculateBalanceService: CalculateBalanceService,
         private readonly generateTokenService: GenerateTokenService,
@@ -28,21 +30,21 @@ export class ScheduleModule {
 
     @Cron("0 0 9 * * *")
     async subscribeBillDayReport() {
-        await this.billDayReportService.subscribe();
+         this.configService.getSchedule() && await this.billDayReportService.subscribe();
     }
 
     @Interval(60 * 1000)
     async subscribeCalculateBalance() {
-        await this.calculateBalanceService.subscribe();
+        this.configService.getSchedule() &&  await this.calculateBalanceService.subscribe();
     }
 
     @Interval(60 * 1000)
     async subscribeGenerateToken() {
-        await this.generateTokenService.subscribe();
+        this.configService.getSchedule() && await this.generateTokenService.subscribe();
     }
 
     @Interval(60 * 1000)
     async subscribeSendMessage() {
-        await this.sendMessageService.subscribe();
+        this.configService.getSchedule() &&  await this.sendMessageService.subscribe();
     }
 }
