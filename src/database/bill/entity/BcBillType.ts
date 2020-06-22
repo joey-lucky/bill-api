@@ -1,5 +1,5 @@
-import {Column, Entity} from "../decorator";
-import {BaseTreeEntity} from "../base";
+import {Column, Entity} from "../../decorator";
+import {BaseTreeEntity} from "../../base";
 
 @Entity()
 export class BcBillType extends BaseTreeEntity {

@@ -11,6 +11,9 @@ import {SafeModule} from "./safe/safe.module";
 import {HomeModule} from "./app/home/home.module";
 import {FundBussTypeModule} from "./invest/fund-buss-type/fund-buss-type.module";
 import {FundTypeModule} from "./invest/fund-type/fund-type.module";
+import {FundModule} from "./invest/fund/fund.module";
+import {FundBuyCommissionModule} from "./invest/fund-buy-commission/fund-buy-commission.module";
+import {FundSellCommissionModule} from "./invest/fund-sell-commission/fund-sell-commission.module";
 
 export const routes:any[] = [
     BillModule,
@@ -28,4 +31,7 @@ export const routes:any[] = [
 
     FundBussTypeModule,
     FundTypeModule,
+    FundModule,
+    FundBuyCommissionModule,
+    FundSellCommissionModule,
 ];

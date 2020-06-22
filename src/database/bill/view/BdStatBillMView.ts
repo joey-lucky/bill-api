@@ -1,5 +1,5 @@
 import {Column, ViewEntity} from "typeorm";
-import {BaseView} from "../base";
+import {BaseView} from "../../base";
 
 @ViewEntity({
     name: "bd_stat_bill_m_view",

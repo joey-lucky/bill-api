@@ -1,5 +1,5 @@
 import {BcBillTemplate} from "../entity/BcBillTemplate";
-import {Column, ViewEntity} from "../decorator";
+import {Column, ViewEntity} from "../../decorator";
 
 @ViewEntity({
     expression: `select billTemplate.*,

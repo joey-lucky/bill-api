@@ -1,6 +1,6 @@
-import {Column, Entity} from "../decorator";
+import {Column, Entity} from "../../decorator";
 import {Unique} from "typeorm";
-import {BaseTreeEntity} from "../base";
+import {BaseTreeEntity} from "../../base";
 
 @Entity()
 @Unique(["typeCode","code"])

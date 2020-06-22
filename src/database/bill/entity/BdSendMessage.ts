@@ -1,6 +1,6 @@
-import {DateTimeColumn} from "../decorator";
-import {Column,Entity} from "../decorator";
-import {BaseEntity} from "../base";
+import {DateTimeColumn} from "../../decorator";
+import {Column,Entity} from "../../decorator";
+import {BaseEntity} from "../../base";
 
 @Entity()
 export class BdSendMessage extends BaseEntity {

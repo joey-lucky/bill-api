@@ -1,5 +1,5 @@
 import {BcBillType} from "../entity/BcBillType";
-import {Column, ViewEntity} from "../decorator";
+import {Column, ViewEntity} from "../../decorator";
 
 @ViewEntity({
     expression: `select t.*,t1.name parent_name,t2.value type_value

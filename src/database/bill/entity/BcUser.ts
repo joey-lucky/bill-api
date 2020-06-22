@@ -1,6 +1,6 @@
 import { PrimaryGeneratedColumn} from "typeorm";
-import {Column,Entity} from "../decorator";
-import {BaseEntity} from "../base";
+import {Column,Entity} from "../../decorator";
+import {BaseEntity} from "../../base";
 
 @Entity()
 export class BcUser extends BaseEntity {

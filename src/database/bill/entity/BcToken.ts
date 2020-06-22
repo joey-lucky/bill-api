@@ -1,6 +1,6 @@
-import {Column, DateTimeColumn, Entity} from "../decorator";
+import {Column, DateTimeColumn, Entity} from "../../decorator";
 import * as moment from "moment";
-import {BaseEntity} from "../base";
+import {BaseEntity} from "../../base";
 
 @Entity()
 export class BcToken extends BaseEntity {

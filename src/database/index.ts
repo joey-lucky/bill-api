@@ -1,23 +1,28 @@
-import {BcUser} from "./entity/BcUser";
-import {BcBillType} from "./entity/BcBillType";
-import {BdBill} from "./entity/BdBill";
-import {BcCard} from "./entity/BcCard";
-import {BcCardType} from "./entity/BcCardType";
-import {BcDictData} from "./entity/BcDictData";
-import {BcDictType} from "./entity/BcDictType";
-import {BcToken} from "./entity/BcToken";
-import {BcBillTypeView} from "./view/BcBillTypeView";
-import {BcCardView} from "./view/BcCardView";
-import {BcDictDataView} from "./view/BcDictDataView";
-import {BdBillView} from "./view/BdBillView";
-import {BcBillTemplateView} from "./view/BcBillTemplateView";
-import {BdStatBillMView} from "./view/BdStatBillMView";
-import {BcBillTemplate} from "./entity/BcBillTemplate";
-import {BdSendMessage} from "./entity/BdSendMessage";
-import {BcFund} from "./entity/fund/BcFund";
-import {BcFundType} from "./entity/fund/BcFundType";
-import {BdFundIopv} from "./entity/fund/BdFundIopv";
-import {BcFundBussType} from "./entity/fund/BcFundBussType";
+import {BcUser} from "./bill/entity/BcUser";
+import {BcBillType} from "./bill/entity/BcBillType";
+import {BdBill} from "./bill/entity/BdBill";
+import {BcCard} from "./bill/entity/BcCard";
+import {BcCardType} from "./bill/entity/BcCardType";
+import {BcDictData} from "./bill/entity/BcDictData";
+import {BcDictType} from "./bill/entity/BcDictType";
+import {BcToken} from "./bill/entity/BcToken";
+import {BcBillTypeView} from "./bill/view/BcBillTypeView";
+import {BcCardView} from "./bill/view/BcCardView";
+import {BcDictDataView} from "./bill/view/BcDictDataView";
+import {BdBillView} from "./bill/view/BdBillView";
+import {BcBillTemplateView} from "./bill/view/BcBillTemplateView";
+import {BdStatBillMView} from "./bill/view/BdStatBillMView";
+import {BcBillTemplate} from "./bill/entity/BcBillTemplate";
+import {BdSendMessage} from "./bill/entity/BdSendMessage";
+import {BcFund} from "./fund/entity/BcFund";
+import {BcFundType} from "./fund/entity/BcFundType";
+import {BdFundIopv} from "./fund/entity/BdFundIopv";
+import {BcFundBussType} from "./fund/entity/BcFundBussType";
+import {BcFundView} from "./fund/view/BcFundView";
+import {BcFundBuyCommission} from "./fund/entity/BcFundBuyCommission";
+import {BcFundSellCommission} from "./fund/entity/BcFundSellCommission";
+import { BdFundDeal } from "./fund/entity/BdFundDeal";
+import {BdFundDealSell} from "./fund/entity/BdFundDealSell";
 export * from "./base";
 
 export const tables = [
@@ -35,6 +40,10 @@ export const tables = [
     BcFundType,
     BdFundIopv,
     BcFundBussType,
+    BcFundBuyCommission,
+    BcFundSellCommission,
+    BdFundDeal,
+    BdFundDealSell,
 ];
 
 export const views = [
@@ -44,6 +53,7 @@ export const views = [
     BcDictDataView,
     BdBillView,
     BdStatBillMView,
+    BcFundView,
 ];
 
 export {
@@ -67,6 +77,10 @@ export {
     BcFundType,
     BdFundIopv,
     BcFundBussType,
+    BcFundView,
+    BcFundBuyCommission,
+    BcFundSellCommission,
+    BdFundDeal,
 };
 
 export {PageInfo} from "../service/response";

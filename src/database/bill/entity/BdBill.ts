@@ -1,7 +1,7 @@
 import {BeforeInsert} from "typeorm";
-import {Assert} from "../../utils/Assert";
-import {Column, DateTimeColumn, Entity} from "../decorator";
-import {BaseEntity} from "../base";
+import {Assert} from "../../../utils/Assert";
+import {Column, DateTimeColumn, Entity} from "../../decorator";
+import {BaseEntity} from "../../base";
 
 @Entity()
 export class BdBill extends BaseEntity {

@@ -1,5 +1,5 @@
-import {BcBillType} from "../index";
-import {Column, ViewEntity} from "../decorator";
+import {BcBillType} from "../../index";
+import {Column, ViewEntity} from "../../decorator";
 import {BcDictData} from "../entity/BcDictData";
 
 @ViewEntity({

@@ -1,6 +1,6 @@
 import {ViewEntity} from "typeorm";
-import {BaseView} from "../base";
-import {Column} from "../decorator";
+import {BaseView} from "../../base";
+import {Column} from "../../decorator";
 
 @ViewEntity({
     name: "bd_bill_view",
