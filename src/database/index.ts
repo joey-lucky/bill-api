@@ -23,6 +23,8 @@ import {BcFundBuyCommission} from "./fund/entity/BcFundBuyCommission";
 import {BcFundSellCommission} from "./fund/entity/BcFundSellCommission";
 import { BdFundDeal } from "./fund/entity/BdFundDeal";
 import {BdFundDealSell} from "./fund/entity/BdFundDealSell";
+import {BdFundDealView} from "./fund/view/BdFundDealView";
+import {BdFundDealSellView} from "./fund/view/BdFundDealSellView";
 export * from "./base";
 
 export const tables = [
@@ -54,6 +56,8 @@ export const views = [
     BdBillView,
     BdStatBillMView,
     BcFundView,
+    BdFundDealView,
+    BdFundDealSellView,
 ];
 
 export {
@@ -81,6 +85,9 @@ export {
     BcFundBuyCommission,
     BcFundSellCommission,
     BdFundDeal,
+    BdFundDealSell,
+    BdFundDealView,
+    BdFundDealSellView,
 };
 
 export {PageInfo} from "../service/response";

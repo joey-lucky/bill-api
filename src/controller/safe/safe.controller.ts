@@ -28,7 +28,7 @@ export class SafeController extends BaseRestController {
     }
 
     @Get("get-user-info")
-    async getUserInfo(@Query("userName") userName, @Query("password") password) {
+    async getUserInfo() {
         let info = await this.service.getUserInfo();
         return this.responseService.success([info], "");
     }
