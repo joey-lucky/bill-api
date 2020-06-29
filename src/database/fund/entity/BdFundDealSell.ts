@@ -32,6 +32,9 @@ export class BdFundDealSell extends BaseEntity {
     @Column({type: "double", comment: "数据状态，关联字典fund_data_status"})
     dataStatus: string;
 
+    @Column({type: "double", comment: "盈利比"})
+    profitRadio: number;
+
     @ManyToOne(type => BdFundDeal, {onDelete: "CASCADE", onUpdate: "NO ACTION"})
     @JoinColumn()
     fundDeal: BdFundDeal;

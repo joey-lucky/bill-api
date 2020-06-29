@@ -11,13 +11,13 @@ export class BdFundDeal extends BaseEntity {
     @DateTimeColumn({nullable: false, comment: "申请买入日期"})
     applyBuyDate: Date;
 
-    @DateTimeColumn({ comment: "买入日期"})
+    @DateTimeColumn({comment: "买入日期"})
     buyDate: Date;
 
     @Column({nullable: false, type: "double", comment: "买入金额"})
     buyMoney: number;
 
-    @Column({type: "double", comment: "买入数量"})
+    @Column({type: "double", default: 0, comment: "买入数量"})
     buyCount: number;
 
     @Column({type: "double", comment: "买入价格"})
@@ -34,6 +34,15 @@ export class BdFundDeal extends BaseEntity {
 
     @Column({type: "double", comment: "累计卖出手续费"})
     totalSellCommission: number;
+
+    @Column({type: "double", comment: "市值"})
+    marketValue: number;
+
+    @Column({type: "double", comment: "盈利金额"})
+    profitMoney: number;
+
+    @Column({type: "double", comment: "盈利比"})
+    profitRadio: number;
 
     @Column({type: "double", comment: "剩余份额"})
     remainCount: number;
