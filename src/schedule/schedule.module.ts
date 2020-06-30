@@ -5,6 +5,7 @@ import {GenerateTokenService} from "./providers/generate-token.service";
 import {SendMessageService} from "./providers/send-message.service";
 import {Cron, Interval, ScheduleModule as NestScheduleModule} from '@nestjs/schedule';
 import {ConfigService} from "../service/config";
+import {CrawlFundPriceService} from "./providers/crawl-fund-price.service";
 
 @Module({
     providers:[
@@ -12,6 +13,7 @@ import {ConfigService} from "../service/config";
         CalculateBalanceService,
         GenerateTokenService,
         SendMessageService,
+        CrawlFundPriceService,
     ],
     imports: [
         NestScheduleModule.forRoot(),
@@ -25,6 +27,7 @@ export class ScheduleModule {
         private readonly calculateBalanceService: CalculateBalanceService,
         private readonly generateTokenService: GenerateTokenService,
         private readonly sendMessageService: SendMessageService,
+        private readonly crawlFundPriceService: CrawlFundPriceService,
     ) {
     }
 

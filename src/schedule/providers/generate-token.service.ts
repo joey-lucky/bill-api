@@ -17,14 +17,6 @@ export class GenerateTokenService implements Schedule{
 
     private static EXPIRES_THRESHOLD = 20 * 60 * 1000;
 
-    static get schedule() {
-        return {
-            interval: "60s", // 60 分钟间隔
-            type: "worker", // 指定所有的 worker 都需要执行
-            immediate: false,
-        };
-    }
-
     subscribe = async () => {
         try {
             const tokenEntityList = await this.dbService.find(BcToken, {

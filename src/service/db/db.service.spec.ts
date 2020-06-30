@@ -82,7 +82,6 @@ describe('DbService', () => {
             expect(entityManager.find.mock.calls[0]).toEqual(args);
         });
     });
-
     describe("buildTrees", () => {
         it("should return tree data", async () => {
             let data = [

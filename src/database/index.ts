@@ -16,7 +16,7 @@ import {BcBillTemplate} from "./bill/entity/BcBillTemplate";
 import {BdSendMessage} from "./bill/entity/BdSendMessage";
 import {BcFund} from "./fund/entity/BcFund";
 import {BcFundType} from "./fund/entity/BcFundType";
-import {BdFundIopv} from "./fund/entity/BdFundIopv";
+import {BdFundPrice} from "./fund/entity/BdFundPrice";
 import {BcFundBussType} from "./fund/entity/BcFundBussType";
 import {BcFundView} from "./fund/view/BcFundView";
 import {BcFundBuyCommission} from "./fund/entity/BcFundBuyCommission";
@@ -40,7 +40,7 @@ export const tables = [
     BdSendMessage,
     BcFund,
     BcFundType,
-    BdFundIopv,
+    BdFundPrice,
     BcFundBussType,
     BcFundBuyCommission,
     BcFundSellCommission,
@@ -79,7 +79,7 @@ export {
     BdStatBillMView,
     BcFund,
     BcFundType,
-    BdFundIopv,
+    BdFundPrice,
     BcFundBussType,
     BcFundView,
     BcFundBuyCommission,
