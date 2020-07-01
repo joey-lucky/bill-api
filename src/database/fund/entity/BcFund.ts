@@ -14,10 +14,10 @@ export class BcFund extends BaseEntity {
     @Index({unique:true})
     code: string;
 
-    @Column({nullable:false})
+    @Column({nullable:true})
     fundTypeId: string;
 
-    @Column({nullable:false})
+    @Column({nullable:true})
     fundBussTypeId: string;
 
     @ManyToOne(type => BcFundType, {onDelete: "RESTRICT", onUpdate: "NO ACTION"})
