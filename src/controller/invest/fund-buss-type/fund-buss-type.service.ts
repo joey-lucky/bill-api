@@ -1,8 +1,9 @@
 import {BcFundBussType, PageInfo} from "../../../database";
 import {BaseService} from "../../base.service";
 import {RestService} from "../../base-rest.controller";
+import {Assert} from "../../../utils/Assert";
 
-export  class FundBussTypeService extends BaseService implements RestService {
+export class FundBussTypeService extends BaseService implements RestService {
     public async create(data: any): Promise<any> {
         const entity: BcFundBussType = this.parseToEntity(BcFundBussType, data);
         await this.createEntity(entity);
@@ -11,6 +12,7 @@ export  class FundBussTypeService extends BaseService implements RestService {
     }
 
     public async destroy(id: string): Promise<any> {
+        await this.assertEntityHasNoChildren(BcFundBussType, id);
         const entity = await this.assertEntityIdExist(BcFundBussType, id);
         await this.deleteEntity(BcFundBussType, id);
         return entity;
@@ -22,7 +24,7 @@ export  class FundBussTypeService extends BaseService implements RestService {
         entity.id = id;
         entity.updateTime = new Date();
         entity.updateBy = this.getCtxUserId();
-        await this.deleteEntity(BcFundBussType,entity.id);
+        await this.deleteEntity(BcFundBussType, entity.id);
         await this.create(entity);
         return entity;
     }
@@ -33,9 +35,9 @@ export  class FundBussTypeService extends BaseService implements RestService {
 
     public async index(params: any): Promise<any[]> {
         let whereCondition = await this.toWhereCondition(params);
-        let data= await this.dbService.createQueryBuilder(BcFundBussType, "t")
+        let data = await this.dbService.createQueryBuilder(BcFundBussType, "t")
             .where(whereCondition.where, whereCondition.params)
-            .orderBy({sort:"ASC"})
+            .orderBy({sort: "ASC"})
             .getMany();
         return this.dbService.buildTrees(data);
     }
@@ -44,7 +46,7 @@ export  class FundBussTypeService extends BaseService implements RestService {
         throw new Error("不支持分页");
     }
 
-    private async toWhereCondition(queryParam:any = {}): Promise<{ where: string, params: any }> {
+    private async toWhereCondition(queryParam: any = {}): Promise<{ where: string, params: any }> {
         let where = " 1=1 ";
         const params: BcFundBussType & QueryParams = {...queryParam};
         if (params.id) {

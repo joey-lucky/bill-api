@@ -1,12 +1,12 @@
 import {
     AfterLoad,
+    BaseEntity as OrmBaseEntity,
     BeforeInsert,
     BeforeUpdate,
     CreateDateColumn,
     PrimaryColumn,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
-    BaseEntity as OrmBaseEntity,
 } from "typeorm";
 import {Assert} from "../utils/Assert";
 import {Column} from "./decorator";
@@ -64,6 +64,9 @@ export class BaseView extends OrmBaseEntity {
 export class BaseTreeEntity extends BaseEntity {
     @Column()
     parentId: string;
+
+    @Column({comment: "是否为叶子", type: "boolean"})
+    isLeaf: boolean;
 
     @BeforeInsert()
     @BeforeUpdate()

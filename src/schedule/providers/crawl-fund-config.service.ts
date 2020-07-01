@@ -17,7 +17,6 @@ export class CrawlFundConfigService implements Schedule {
     @Inject()
     private readonly loggerService: LoggerService;
 
-    @Timeout(1000)
     async subscribe(): Promise<any> {
         this.loggerService.scheduleLogger.verbose(`爬取基金列表\t开始`);
         let str = await this.crawlRemoteData();

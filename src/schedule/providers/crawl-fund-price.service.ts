@@ -3,7 +3,7 @@ import * as moment from "moment";
 import {Moment} from "moment";
 import {HttpService, Inject} from "@nestjs/common";
 import {toGetUrl} from "../../utils/url.utils";
-import {Cron, Interval, Timeout} from "@nestjs/schedule";
+import {Timeout} from "@nestjs/schedule";
 import {BcFund, BdFundPrice} from "../../database";
 import * as cheerio from "cheerio";
 import {DbService} from "../../service/db";
@@ -19,28 +19,28 @@ export class CrawlFundPriceService implements Schedule {
     @Inject()
     private readonly loggerService: LoggerService;
 
-    @Cron("0 0 3 * * *")
+    // @Cron("0 0 3 * * *")
+    @Timeout(1000)
     async subscribe(): Promise<any> {
         const fundList = await BcFund.find();
         for (let fund of fundList) {
-            this.loggerService.scheduleLogger.verbose(`${fund.name}-爬取净值数据\t开始`);
-            let latestDate:Date =await this.getLatestDate(fund);
-            let startTime = CrawlFundPriceService.DEF_START_TIME;
-            if (latestDate !== null) {
-                startTime = moment(latestDate).add(1,"day");
+            try{
+                await this.startCrawl(fund);
+            }catch (e) {
             }
-            this.loggerService.scheduleLogger.verbose(`${fund.name}-爬取净值数据\t开始时间：${startTime.format("YYYY-MM-DD")}`);
-            let crawlData = await this.crawlFundPriceData(fund,startTime)
-            this.loggerService.scheduleLogger.verbose(`${fund.name}-爬取净值数据\t开始存储,数据长度：${crawlData.length}`);
-            for (let item of crawlData) {
-                item.fundId = fund.id;
-                try{
-                    await item.save();
-                }catch (e) {
-                }
-            }
-            this.loggerService.scheduleLogger.verbose(`${fund.name}-爬取净值数据\t结束`);
         }
+    }
+
+    async startCrawl(fund:BcFund){
+        this.loggerService.scheduleLogger.verbose(`${fund.name}-爬取净值数据\t开始`);
+        let latestDate:Date =await this.getLatestDate(fund);
+        let startTime = CrawlFundPriceService.DEF_START_TIME;
+        if (latestDate !== null) {
+            startTime = moment(latestDate).add(1,"day");
+        }
+        this.loggerService.scheduleLogger.verbose(`${fund.name}-爬取净值数据\t开始时间：${startTime.format("YYYY-MM-DD")}`);
+        await this.crawlFundPriceData(fund,startTime)
+        this.loggerService.scheduleLogger.verbose(`${fund.name}-爬取净值数据\t结束`);
     }
 
     async getLatestDate(fund: BcFund):Promise<Date>{
@@ -55,22 +55,37 @@ export class CrawlFundPriceService implements Schedule {
         return model.dateTime;
     }
 
-    async crawlFundPriceData(fund:BcFund,startTime:Moment):Promise<BdFundPrice[]>{
-        let endTime: Moment = moment().add(-1, "day").startOf("day");
-        let curr = startTime;
-        const result: BdFundPrice[] = [];
-        while (curr.isBefore(endTime)) {
-            let start = curr.clone().add(1, "day");
-            let end = curr.clone().add(10, "day");
-            if (end.isAfter(endTime)) {
-                end = endTime;
+    async crawlFundPriceData(fund:BcFund,startTime:Moment){
+        let curr = moment().startOf("day");
+        let zeroCount = 0;
+        while (curr.isAfter(startTime)) {
+            try{
+                let end = curr.clone().add(-1, "day");
+                let start = curr.clone().add(-10, "day");
+                if (start.isBefore(startTime)) {
+                    start = startTime;
+                }
+                curr = start;
+                let html = await this.crawlRemoteHtml(fund.code, start, end);
+                let entities  = await this.htmlToEntity(html);
+                this.loggerService.scheduleLogger.verbose(`${fund.name}-爬取净值数据\t开始存储,数据长度：${entities.length}`);
+                for (let item of entities) {
+                    item.fundId = fund.id;
+                    try{
+                        await item.save();
+                    }catch (e) {
+                    }
+                }
+                if (entities.length ===0){
+                    zeroCount++;
+                    if (zeroCount >= 10) {
+                        return;
+                    }
+                }
+            }catch (e) {
+
             }
-            let html = await this.crawlRemoteHtml(fund.code, start, end);
-            let entities  = await this.htmlToEntity(html);
-            result.push(...entities);
-            curr = end;
         }
-        return result;
     }
 
     // 将html解析成entity
