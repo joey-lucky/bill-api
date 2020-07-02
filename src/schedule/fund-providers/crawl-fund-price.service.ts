@@ -25,7 +25,9 @@ export class CrawlFundPriceService implements Schedule {
         const fundList = await BcFund.find();
         for (let fund of fundList) {
             try{
-                await this.startCrawl(fund);
+                if (fund.fundBussTypeId) {
+                    await this.startCrawl(fund);
+                }
             }catch (e) {
             }
         }

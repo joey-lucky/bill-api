@@ -13,6 +13,7 @@ export class BdFundPrice extends BaseEntity {
     price:number;
 
     @Column({type:"double",nullable:false})
+    @Index()
     increase: number;
 
     @DateTimeColumn()

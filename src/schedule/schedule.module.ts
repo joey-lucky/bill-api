@@ -5,8 +5,8 @@ import {GenerateTokenService} from "./providers/generate-token.service";
 import {SendMessageService} from "./providers/send-message.service";
 import {Cron, Interval, ScheduleModule as NestScheduleModule} from '@nestjs/schedule';
 import {ConfigService} from "../service/config";
-import {CrawlFundPriceService} from "./providers/crawl-fund-price.service";
-import {CrawlFundConfigService} from "./providers/crawl-fund-config.service";
+import {CrawlFundPriceService} from "./fund-providers/crawl-fund-price.service";
+import {CrawlFundConfigService} from "./fund-providers/crawl-fund-config.service";
 
 @Module({
     providers:[

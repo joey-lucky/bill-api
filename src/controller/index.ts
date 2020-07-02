@@ -16,6 +16,7 @@ import {FundBuyCommissionModule} from "./invest/fund-buy-commission/fund-buy-com
 import {FundSellCommissionModule} from "./invest/fund-sell-commission/fund-sell-commission.module";
 import {FundDealModule} from "./invest/fund-deal/fund-deal.module";
 import {FundDealSellModule} from "./invest/fund-deal-sell/fund-deal-sell.module";
+import {FundPriceModule} from "./invest/fund-price/fund-price.module";
 
 export const routes:any[] = [
     BillModule,
@@ -39,4 +40,5 @@ export const routes:any[] = [
 
     FundDealModule,
     FundDealSellModule,
+    FundPriceModule,
 ];
