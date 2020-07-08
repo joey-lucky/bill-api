@@ -1,24 +1,24 @@
-import {BdFundDeal, BdFundDealView, PageInfo} from "../../../database";
+import {BdFundDealBuy, BdFundDealView, PageInfo} from "../../../database";
 import {BaseService} from "../../base.service";
 import {RestService} from "../../base-rest.controller";
 
 export class FundDealService extends BaseService implements RestService {
     public async create(data: any): Promise<any> {
-        const entity: BdFundDeal = this.parseToEntity(BdFundDeal, data);
+        const entity: BdFundDealBuy = this.parseToEntity(BdFundDealBuy, data);
         await this.createEntity(entity);
         await entity.reload();
         return entity;
     }
 
     public async destroy(id: string): Promise<any> {
-        const entity = await this.assertEntityIdExist(BdFundDeal, id);
-        await this.deleteEntity(BdFundDeal, id);
+        const entity = await this.assertEntityIdExist(BdFundDealBuy, id);
+        await this.deleteEntity(BdFundDealBuy, id);
         return entity;
     }
 
     public async update(id: string, data: any): Promise<any> {
-        await this.assertEntityIdExist(BdFundDeal, id);
-        const entity: BdFundDeal = this.parseToEntity(BdFundDeal, data);
+        await this.assertEntityIdExist(BdFundDealBuy, id);
+        const entity: BdFundDealBuy = this.parseToEntity(BdFundDealBuy, data);
         entity.id = id;
         await this.updateEntity(entity);
         await entity.reload();
@@ -26,7 +26,7 @@ export class FundDealService extends BaseService implements RestService {
     }
 
     public async show(id: string): Promise<any> {
-        return await this.assertEntityIdExist(BdFundDeal, id);
+        return await this.assertEntityIdExist(BdFundDealBuy, id);
     }
 
     public async index(params: any): Promise<any[]> {

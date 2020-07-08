@@ -1,7 +1,8 @@
 import {Column, DateTimeColumn, Entity, JoinColumn} from "../../decorator";
 import {BaseEntity} from "../../base";
-import {ManyToOne} from "typeorm";
-import {BdFundDeal} from "./BdFundDeal";
+import {BeforeInsert, BeforeUpdate, ManyToOne} from "typeorm";
+import {BdFundDealBuy} from "./BdFundDealBuy";
+import {BdFundDealView} from "../..";
 
 @Entity()
 export class BdFundDealSell extends BaseEntity {
@@ -29,13 +30,13 @@ export class BdFundDealSell extends BaseEntity {
     @Column({type: "double", comment: "盈利"})
     profitMoney: number;
 
-    @Column({type: "double", comment: "数据状态，关联字典fund_data_status"})
+    @Column({nullable: false, default: "0", comment: "数据状态，关联字典fund_data_status"})
     dataStatus: string;
 
     @Column({type: "double", comment: "盈利比"})
     profitRadio: number;
 
-    @ManyToOne(type => BdFundDeal, {onDelete: "CASCADE", onUpdate: "NO ACTION"})
+    @ManyToOne(type => BdFundDealBuy, {onDelete: "CASCADE", onUpdate: "NO ACTION"})
     @JoinColumn()
-    fundDeal: BdFundDeal;
+    fundDeal: BdFundDealBuy;
 }

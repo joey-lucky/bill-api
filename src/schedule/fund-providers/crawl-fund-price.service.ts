@@ -1,90 +1,81 @@
-import {Schedule} from "../schedule.domain";
+import {BaseSchedule} from "../schedule.domain";
 import * as moment from "moment";
 import {Moment} from "moment";
-import {HttpService, Inject} from "@nestjs/common";
 import {toGetUrl} from "../../utils/url.utils";
 import {Timeout} from "@nestjs/schedule";
 import {BcFund, BdFundPrice} from "../../database";
 import * as cheerio from "cheerio";
-import {DbService} from "../../service/db";
-import {LoggerService} from "../../service/logger";
+import {Assert} from "../../utils/Assert";
 
-export class CrawlFundPriceService implements Schedule {
-    static DEF_START_TIME:Moment = moment("2010-01-01");
+export class CrawlFundPriceService extends BaseSchedule {
+    static DEF_START_TIME: Moment = moment("2010-01-01");
 
-    @Inject()
-    private readonly httpService: HttpService
-    @Inject()
-    private readonly dbService: DbService;
-    @Inject()
-    private readonly loggerService: LoggerService;
+    getScheduleName(): string {
+        return "爬数据(基金净值)"
+    }
 
     // @Cron("0 0 3 * * *")
     @Timeout(1000)
     async subscribe(): Promise<any> {
-        const fundList = await BcFund.find();
+        const fundList = await this.getPendingCrawlFundList();
+        this.log("待爬基金数：" + fundList.length);
         for (let fund of fundList) {
-            try{
-                if (fund.fundBussTypeId) {
-                    await this.startCrawl(fund);
-                }
-            }catch (e) {
+            try {
+                await this.startCrawl(fund);
+            } catch (e) {
             }
         }
     }
 
-    async startCrawl(fund:BcFund){
-        this.loggerService.scheduleLogger.verbose(`${fund.name}-爬取净值数据\t开始`);
-        let latestDate:Date =await this.getLatestDate(fund);
-        let startTime = CrawlFundPriceService.DEF_START_TIME;
-        if (latestDate !== null) {
-            startTime = moment(latestDate).add(1,"day");
+    async startCrawl(fund: BcFund) {
+        this.logItem(fund.name, "开始");
+        let minStartTime = CrawlFundPriceService.DEF_START_TIME.clone();
+        let maxEndTime = moment().startOf("day").add(-1, "day");
+        let [minDateTime, maxDateTime] = await this.getDateTimeRange(fund);
+        if (minDateTime === null) {
+            await this.crawlFundPriceData(fund, minStartTime, maxEndTime)
+        } else {
+            await this.crawlFundPriceData(fund,
+                minStartTime,
+                moment(minDateTime).startOf("day").add(-1, "day")
+            );
+            await this.crawlFundPriceData(fund,
+                moment(maxDateTime).startOf("day").add(1,"day"),
+                maxEndTime
+            )
         }
-        this.loggerService.scheduleLogger.verbose(`${fund.name}-爬取净值数据\t开始时间：${startTime.format("YYYY-MM-DD")}`);
-        await this.crawlFundPriceData(fund,startTime)
-        this.loggerService.scheduleLogger.verbose(`${fund.name}-爬取净值数据\t结束`);
+        this.logItem(fund.name, "结束");
     }
 
-    async getLatestDate(fund: BcFund):Promise<Date>{
+    async getDateTimeRange(fund: BcFund): Promise<[Date, Date]> {
         // language=MySQL
         let sql = `
-            select max(t.date_time) as dateTime
+            select max(t.date_time) as maxDateTime,
+                   min(t.date_time) as minDateTime
             from bd_fund_price t
             where t.fund_id = @fundId
         `;
         let data = await this.dbService.query(sql, {fundId: fund.id})
         let model = data[0];
-        return model.dateTime;
+        return [model.minDateTime, model.maxDateTime];
     }
 
-    async crawlFundPriceData(fund:BcFund,startTime:Moment){
-        let curr = moment().startOf("day");
-        let zeroCount = 0;
-        while (curr.isAfter(startTime)) {
-            try{
-                let end = curr.clone().add(-1, "day");
-                let start = curr.clone().add(-10, "day");
+    async crawlFundPriceData(fund: BcFund, startTime: Moment, endTime: Moment) {
+        this.logItem(fund.name, `开始：${startTime.format("YYYY-MM-DD")} 至 ${endTime.format("YYYY-MM-DD")}`);
+        let curr = endTime;
+        while (!curr.isBefore(startTime)) {
+            try {
+                let end = curr;
+                let start = curr.clone().add(-9, "day");
                 if (start.isBefore(startTime)) {
                     start = startTime;
                 }
-                curr = start;
-                let html = await this.crawlRemoteHtml(fund.code, start, end);
-                let entities  = await this.htmlToEntity(html);
-                this.loggerService.scheduleLogger.verbose(`${fund.name}-爬取净值数据\t开始存储,数据长度：${entities.length}`);
-                for (let item of entities) {
-                    item.fundId = fund.id;
-                    try{
-                        await item.save();
-                    }catch (e) {
-                    }
-                }
-                if (entities.length ===0){
-                    zeroCount++;
-                    if (zeroCount >= 10) {
-                        return;
-                    }
-                }
-            }catch (e) {
+                curr = start.clone().add(-1,"day");
+                let html = await this.crawlRemoteHtml(fund, start, end);
+                let entities = await this.htmlToEntity(html);
+                this.logItem(fund.name, "爬取数量：" + entities.length);
+                await this.savePriceEntity(fund, entities, start, end);
+            } catch (e) {
 
             }
         }
@@ -94,37 +85,80 @@ export class CrawlFundPriceService implements Schedule {
     async htmlToEntity(html: string): Promise<BdFundPrice[]> {
         const result: BdFundPrice[] = []
         cheerio.load(html)("tbody tr").each(function (i, elem) {
-            try{
+            try {
                 const datetime = elem.children[0].children[0].data;
                 const price = elem.children[1].children[0].data;
                 const percent = elem.children[3].children[0].data;
                 const bdFundPrice = new BdFundPrice();
-                bdFundPrice.dateTime = moment(datetime,"YYYY-MM-DD").toDate();
+                bdFundPrice.dateTime = moment(datetime, "YYYY-MM-DD").toDate();
                 bdFundPrice.price = Number.parseFloat(price);
                 bdFundPrice.increase = Number.parseFloat(percent.replace("%", ""));
                 result.push(bdFundPrice);
-            }catch (e) {
+            } catch (e) {
             }
         })
         return result;
     }
 
     // http://fund.eastmoney.com/f10/F10DataApi.aspx?type=lsjz&code=110022&sdate=2020-01-01&edate=2020-06-01
-    async crawlRemoteHtml(code: string, startDate: Moment, endDate: Moment): Promise<string> {
+    async crawlRemoteHtml(fund: BcFund, startDate: Moment, endDate: Moment): Promise<string> {
         const dayCount = startDate.diff(endDate, "day") + 1;
         const url = "http://fund.eastmoney.com/f10/F10DataApi.aspx";
         const config = {headers: {'Content-Type': 'text/html; charset=utf-8'}};
         const params = {
             'type': 'lsjz',
-            'code': code,
+            'code': fund.code,
             'page': 1,
             'per': dayCount,
             'sdate': startDate.format("YYYY-MM-DD"),
             'edate': endDate.format("YYYY-MM-DD")
         }
+        let start = Date.now();
         let completeUrl = toGetUrl(url, params);
-        this.loggerService.scheduleLogger.verbose("CrawlFundPriceService " + completeUrl);
+        this.logItem(fund.name, completeUrl + ` (${Date.now() - start}ms)`,)
         const {data} = await this.httpService.get(completeUrl, config).toPromise();
         return data;
+    }
+
+    async getPendingCrawlFundList() {
+        let sql = `
+            select t.*
+            from bc_fund t
+            where t.fund_buss_type_id is not null
+               or t.id in (
+                select it.fund_id
+                from bd_fund_deal it
+            )
+        `
+        let params = {};
+        let data = await this.dbService.query(sql, params);
+        return this.dbService.toEntities(BcFund, data);
+    }
+
+    // 填充式保存，确保每个时间都有数据
+    async savePriceEntity(fund: BcFund, entities: BdFundPrice[] = [],
+                                 start: Moment, end: Moment) {
+        Assert.hasText(fund.id, "fund id is null");
+        start = start.startOf("day");
+        end = end.startOf("day");
+        let saveData: BdFundPrice[] = [...entities];
+        let timeSet: Set<number> = new Set();
+        for (let item of saveData) {
+            timeSet.add(item.dateTime.getTime());
+        }
+        let curr = start.clone();
+        while (!curr.isAfter(end)) {
+            if (!timeSet.has(curr.toDate().getTime())) {
+                let entity = new BdFundPrice();
+                entity.dateTime = curr.toDate();
+                saveData.push(entity);
+            }
+            curr = curr.add(1, "day");
+        }
+        for (let item of saveData) {
+            item.fundId = fund.id;
+            item.createBy = "schedule";
+            await item.save();
+        }
     }
 }

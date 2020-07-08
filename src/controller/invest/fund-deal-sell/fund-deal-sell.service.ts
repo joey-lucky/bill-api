@@ -51,6 +51,9 @@ export class FundDealSellService extends BaseService implements RestService {
         if (params.id) {
             where += " and t.id = :id ";
         }
+        if (params.fundDealId) {
+            where += " and t.fundDealId = :fundDealId ";
+        }
         if (params.keyword) {
             params.keyword = "%" + params.keyword + "%";
             let likeSql = " t.name like :keyword ";

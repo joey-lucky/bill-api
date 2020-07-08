@@ -5228,6 +5228,11 @@ nth-check@~1.0.1:
   dependencies:
     boolbase "~1.0.0"
 
+number-precision@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.npm.taobao.org/number-precision/download/number-precision-1.4.0.tgz#e8b9cfc7e919fdd5ece69e7c4de4f5f5c6435bf8"
+  integrity sha1-6LnPx+kZ/dXs5p58TeT19cZDW/g=
+
 nwsapi@^2.2.0:
   version "2.2.0"
   resolved "https://registry.npm.taobao.org/nwsapi/download/nwsapi-2.2.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fnwsapi%2Fdownload%2Fnwsapi-2.2.0.tgz#204879a9e3d068ff2a55139c2c772780681a38b7"

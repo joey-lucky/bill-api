@@ -28,13 +28,13 @@ describe('crawl-fund-price.service', () => {
 
     describe("show", () => {
         it("crawlRemoteHtml not null", async () => {
-            const data = await service.crawlRemoteHtml(
-                "110022",
-                moment("2010-01-01"),
-                moment("2010-01-01").add(10,"day"),
-            )
-           let entity =  await service.htmlToEntity(data);
-            console.log(entity);
+           //  const data = await service.crawlRemoteHtml(
+           //      "110022",
+           //      moment("2010-01-01"),
+           //      moment("2010-01-01").add(10,"day"),
+           //  )
+           // let entity =  await service.htmlToEntity(data);
+           //  console.log(entity);
         });
 
     });

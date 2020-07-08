@@ -9,10 +9,10 @@ export class BdFundPrice extends BaseEntity {
     @Column({nullable: false})
     fundId: string;
 
-    @Column({type:"double"})
+    @Column({type:"double",default:-1,nullable:true})
     price:number;
 
-    @Column({type:"double",nullable:false})
+    @Column({type:"double",default:-1,nullable:true})
     @Index()
     increase: number;
 

@@ -74,7 +74,7 @@ export class CompleteBuyFundService extends BaseSchedule {
     private async getPendingFundList():Promise<BdFundDealBuy[]>{
         let sql = `
             select *
-            from bd_fund_deal_buy t
+            from bd_fund_deal_sell t
             where t.data_status = '0'
               and t.apply_buy_date < str_to_date(@datetime, '%Y-%m-%d %H:%i:%s')
             order by t.fund_id

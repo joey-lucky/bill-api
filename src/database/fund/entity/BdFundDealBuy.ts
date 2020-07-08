@@ -1,10 +1,11 @@
 import {Column, DateTimeColumn, Entity, JoinColumn} from "../../decorator";
 import {BaseEntity} from "../../base";
-import {Index, ManyToOne} from "typeorm";
+import {BeforeInsert, BeforeUpdate, Index, ManyToOne} from "typeorm";
 import {BcFund} from "./BcFund";
+import {Assert} from "../../../utils/Assert";
 
 @Entity()
-export class BdFundDeal extends BaseEntity {
+export class BdFundDealBuy extends BaseEntity {
     @Column({nullable: false})
     fundId: string;
 
@@ -26,27 +27,6 @@ export class BdFundDeal extends BaseEntity {
     @Column({type: "double", comment: "买入手续费"})
     buyCommission: number;
 
-    @Column({type: "double", comment: "累计卖出金额"})
-    totalSellMoney: number;
-
-    @Column({type: "double", comment: "累计卖出份额"})
-    totalSellCount: number;
-
-    @Column({type: "double", comment: "累计卖出手续费"})
-    totalSellCommission: number;
-
-    @Column({type: "double", comment: "市值"})
-    marketValue: number;
-
-    @Column({type: "double", comment: "盈利金额"})
-    profitMoney: number;
-
-    @Column({type: "double", comment: "盈利比"})
-    profitRadio: number;
-
-    @Column({type: "double", comment: "剩余份额"})
-    remainCount: number;
-
     @Column({nullable: false, default: "0", comment: "数据状态，关联字典fund_data_status"})
     @Index()
     dataStatus: string;
@@ -57,9 +37,15 @@ export class BdFundDeal extends BaseEntity {
 
     @Column({nullable: false, comment: "买入用户id"})
     @Index()
-    userId: boolean;
+    userId: string;
 
     @ManyToOne(type => BcFund, {onDelete: "CASCADE", onUpdate: "NO ACTION"})
     @JoinColumn()
     fund: BcFund;
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    validate(){
+        Assert.isTrue(this.buyMoney >= 10, "买入金额不大于10");
+    }
 }

@@ -1,8 +1,5 @@
 import {MiddlewareConsumer, Module} from '@nestjs/common';
-import {TypeOrmModule} from "@nestjs/typeorm";
 import {routes} from "./controller";
-import {tables, views} from "./database";
-import {ConfigService} from "./service/config";
 import {ScheduleModule} from "./schedule/schedule.module";
 import {GlobalModule} from "./global.module";
 
@@ -10,13 +7,6 @@ import {GlobalModule} from "./global.module";
     imports: [
         GlobalModule,
         ScheduleModule,
-        TypeOrmModule.forRootAsync({
-            inject: [ConfigService],
-            useFactory: (configService: ConfigService) => ({
-                ...configService.getTypeormConfig(),
-                entities: [...tables, ...views]
-            }),
-        }),
         ...routes,
     ],
     providers: [],

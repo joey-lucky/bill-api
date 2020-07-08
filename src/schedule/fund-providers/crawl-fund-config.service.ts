@@ -1,33 +1,26 @@
-import {Schedule} from "../schedule.domain";
-import * as moment from "moment";
-import {Moment} from "moment";
+import {BaseSchedule} from "../schedule.domain";
 import {HttpService, Inject} from "@nestjs/common";
-import {toGetUrl} from "../../utils/url.utils";
-import {Cron, Interval, Timeout} from "@nestjs/schedule";
-import {BcFund, BdFundPrice} from "../../database";
-import * as cheerio from "cheerio";
+import {BcFund} from "../../database";
 import {DbService} from "../../service/db";
 import {LoggerService} from "../../service/logger";
 
-export class CrawlFundConfigService implements Schedule {
-    @Inject()
-    private readonly httpService: HttpService
-    @Inject()
-    private readonly dbService: DbService;
-    @Inject()
-    private readonly loggerService: LoggerService;
+export class CrawlFundConfigService extends BaseSchedule {
+    getScheduleName(): string {
+        return "爬数据(基金列表)"
+    }
 
     async subscribe(): Promise<any> {
+        this.log("开始")
         this.loggerService.scheduleLogger.verbose(`爬取基金列表\t开始`);
         let str = await this.crawlRemoteData();
         let entities = await this.dataToEntity(str);
-        this.loggerService.scheduleLogger.verbose(`爬取基金列表\t数量：${entities.length}`);
+        this.log("数量：" + entities.length);
         let needSaveEntities =await this.getNeedInsertEntities(entities);
-        this.loggerService.scheduleLogger.verbose(`爬取基金列表\t新增数量：${needSaveEntities.length}`);
+        this.log("需要新增数量：" + needSaveEntities.length);
         for (let item of needSaveEntities) {
             await item.save();
         }
-        this.loggerService.scheduleLogger.verbose(`爬取基金列表\t结束`);
+        this.log("结束")
     }
 
     // 将html解析成entity

@@ -7,6 +7,8 @@ import {Cron, Interval, ScheduleModule as NestScheduleModule} from '@nestjs/sche
 import {ConfigService} from "../service/config";
 import {CrawlFundPriceService} from "./fund-providers/crawl-fund-price.service";
 import {CrawlFundConfigService} from "./fund-providers/crawl-fund-config.service";
+import {CompleteBuyFundService} from "./fund-providers/complete-buy-fund.service";
+import {FundModule} from "../fund/fund.module";
 
 @Module({
     providers:[
@@ -16,10 +18,12 @@ import {CrawlFundConfigService} from "./fund-providers/crawl-fund-config.service
         SendMessageService,
         CrawlFundPriceService,
         CrawlFundConfigService,
+        CompleteBuyFundService,
     ],
     imports: [
         NestScheduleModule.forRoot(),
-        HttpModule
+        HttpModule,
+        FundModule,
     ],
 })
 export class ScheduleModule {
