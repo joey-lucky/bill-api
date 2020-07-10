@@ -21,7 +21,7 @@ import {BcFundBussType} from "./fund/entity/BcFundBussType";
 import {BcFundView} from "./fund/view/BcFundView";
 import {BcFundBuyCommission} from "./fund/entity/BcFundBuyCommission";
 import {BcFundSellCommission} from "./fund/entity/BcFundSellCommission";
-import { BdFundDealBuy } from "./fund/entity/BdFundDealBuy";
+import { BdFundDeal } from "./fund/entity/BdFundDeal";
 import {BdFundDealSell} from "./fund/entity/BdFundDealSell";
 import {BdFundDealView} from "./fund/view/BdFundDealView";
 import {BdFundDealSellView} from "./fund/view/BdFundDealSellView";
@@ -45,7 +45,7 @@ export const tables = [
     BcFundBussType,
     BcFundBuyCommission,
     BcFundSellCommission,
-    BdFundDealBuy,
+    BdFundDeal,
     BdFundDealSell,
 ];
 
@@ -86,7 +86,7 @@ export {
     BcFundView,
     BcFundBuyCommission,
     BcFundSellCommission,
-    BdFundDealBuy,
+    BdFundDeal,
     BdFundDealSell,
     BdFundDealView,
     BdFundDealSellView,

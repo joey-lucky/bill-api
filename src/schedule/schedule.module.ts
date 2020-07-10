@@ -8,7 +8,9 @@ import {ConfigService} from "../service/config";
 import {CrawlFundPriceService} from "./fund-providers/crawl-fund-price.service";
 import {CrawlFundConfigService} from "./fund-providers/crawl-fund-config.service";
 import {CompleteBuyFundService} from "./fund-providers/complete-buy-fund.service";
-import {FundModule} from "../fund/fund.module";
+import {FundModule} from "../controller/invest/fund/fund.module";
+import {CompleteSellFundService} from "./fund-providers/complete-sell-fund.service";
+import {FundService} from "../controller/invest/fund/fund.service";
 
 @Module({
     providers:[
@@ -19,6 +21,8 @@ import {FundModule} from "../fund/fund.module";
         CrawlFundPriceService,
         CrawlFundConfigService,
         CompleteBuyFundService,
+        CompleteSellFundService,
+        FundService,
     ],
     imports: [
         NestScheduleModule.forRoot(),

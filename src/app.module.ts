@@ -1,7 +1,7 @@
 import {MiddlewareConsumer, Module} from '@nestjs/common';
-import {routes} from "./controller";
 import {ScheduleModule} from "./schedule/schedule.module";
 import {GlobalModule} from "./global.module";
+import {routes} from "./controller";
 
 @Module({
     imports: [

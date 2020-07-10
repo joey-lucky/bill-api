@@ -1,10 +1,16 @@
 import {BdFundDealSell, BdFundDealSellView, PageInfo} from "../../../database";
 import {BaseService} from "../../base.service";
 import {RestService} from "../../base-rest.controller";
+import {Inject} from "@nestjs/common";
+import {FundService} from "../fund/fund.service";
 
 export class FundDealSellService extends BaseService implements RestService {
+    @Inject()
+    fundService: FundService;
+
     public async create(data: any): Promise<any> {
         const entity: BdFundDealSell = this.parseToEntity(BdFundDealSell, data);
+        await this.fundService.assertSellCountValid(entity);
         await this.createEntity(entity);
         await entity.reload();
         return entity;
@@ -17,12 +23,7 @@ export class FundDealSellService extends BaseService implements RestService {
     }
 
     public async update(id: string, data: any): Promise<any> {
-        await this.assertEntityIdExist(BdFundDealSell, id);
-        const entity: BdFundDealSell = this.parseToEntity(BdFundDealSell, data);
-        entity.id = id;
-        await this.updateEntity(entity);
-        await entity.reload();
-        return entity;
+        throw new Error("不支持编辑功能");
     }
 
     public async show(id: string): Promise<any> {

@@ -10,7 +10,6 @@ import {ExceptionInterceptor} from "./interceptor/exception.interceptor";
 import {TokenInterceptor} from "./interceptor/token.interceptor";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {tables, views} from "./database";
-import {FundModule} from "./fund/fund.module";
 
 @Global()
 @Module({
