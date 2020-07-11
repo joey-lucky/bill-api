@@ -3,6 +3,7 @@ import {LoggerService as NestService} from "@nestjs/common/services/logger.servi
 import {QueryRunner,Logger as TypeOrmLogger} from "typeorm";
 import {configure, getLogger, Logger} from "log4js";
 import moment = require("moment");
+import * as path from "path";
 
 class CommonLogger implements NestService {
     private readonly logger: Logger;
@@ -107,19 +108,19 @@ export class LoggerService {
                 },
                 databaseFile: {
                     type: 'DateFile',
-                    filename: 'logs/database',
+                    filename: path.resolve(".","logs/database"),
                     pattern: '.yyyyMMdd.log',
                     alwaysIncludePattern: true,
                 },
                 requestFile: {
                     type: 'DateFile',
-                    filename: 'logs/request',
+                    filename: path.resolve(".","logs/request"),
                     pattern: '.yyyyMMdd.log',
                     alwaysIncludePattern: true,
                 },
                 scheduleFile:{
                     type: 'DateFile',
-                    filename: 'logs/schedule',
+                    filename: path.resolve(".","logs/schedule"),
                     pattern: '.yyyyMMdd.log',
                     alwaysIncludePattern: true,
                 },
