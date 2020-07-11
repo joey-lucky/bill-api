@@ -1,9 +1,7 @@
 import {Column, DateTimeColumn, Entity, JoinColumn} from "../../decorator";
 import {BaseEntity} from "../../base";
-import {BeforeInsert, BeforeUpdate, Index, ManyToOne, OneToMany} from "typeorm";
+import {Index, ManyToOne} from "typeorm";
 import {BcFund} from "./BcFund";
-import {Assert} from "../../../utils/Assert";
-import {BdFundDealSell} from "./BdFundDealSell";
 
 @Entity()
 export class BdFundDeal extends BaseEntity {

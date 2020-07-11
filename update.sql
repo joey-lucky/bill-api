@@ -44,3 +44,4 @@ update bc_bill_type
 set is_leaf = 0
 where is_leaf is null;
 
+ALTER TABLE `bc_fund` ADD `start_date` datetime NULL COMMENT '发行时间';

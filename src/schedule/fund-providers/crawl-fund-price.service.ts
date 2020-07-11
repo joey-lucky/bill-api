@@ -5,12 +5,10 @@ import {toGetUrl} from "../../utils/url.utils";
 import {BcFund, BdFundPrice} from "../../database";
 import * as cheerio from "cheerio";
 import {Assert} from "../../utils/Assert";
-import {Injectable} from "@nestjs/common";
 import {Cron, Timeout} from "@nestjs/schedule";
+import {IsNull, Not} from "typeorm";
 
 export class CrawlFundPriceService extends BaseSchedule {
-    static DEF_START_TIME: Moment = moment("2010-01-01");
-
     getScheduleName(): string {
         return "爬数据(基金净值)"
     }
@@ -26,7 +24,7 @@ export class CrawlFundPriceService extends BaseSchedule {
     }
 
     async subscribe(): Promise<any> {
-        const fundList = await this.getPendingCrawlFundList();
+        const fundList = await this.dbService.find(BcFund, {where: {startDate: Not(IsNull())}})
         this.log("待爬基金数：" + fundList.length);
         for (let fund of fundList) {
             try {
@@ -38,7 +36,7 @@ export class CrawlFundPriceService extends BaseSchedule {
 
     async startCrawl(fund: BcFund) {
         this.logItem(fund.name, "开始");
-        let minStartTime = CrawlFundPriceService.DEF_START_TIME.clone();
+        let minStartTime = moment(fund.startDate);
         let maxEndTime = moment().startOf("day").add(-1, "day");
         let [minDateTime, maxDateTime] = await this.getDateTimeRange(fund);
         if (minDateTime === null) {
@@ -49,7 +47,7 @@ export class CrawlFundPriceService extends BaseSchedule {
                 moment(minDateTime).startOf("day").add(-1, "day")
             );
             await this.crawlFundPriceData(fund,
-                moment(maxDateTime).startOf("day").add(1,"day"),
+                moment(maxDateTime).startOf("day").add(1, "day"),
                 maxEndTime
             )
         }
@@ -79,7 +77,7 @@ export class CrawlFundPriceService extends BaseSchedule {
                 if (start.isBefore(startTime)) {
                     start = startTime;
                 }
-                curr = start.clone().add(-1,"day");
+                curr = start.clone().add(-1, "day");
                 let html = await this.crawlRemoteHtml(fund, start, end);
                 let entities = await this.htmlToEntity(html);
                 this.logItem(fund.name, "爬取数量：" + entities.length);
@@ -129,24 +127,9 @@ export class CrawlFundPriceService extends BaseSchedule {
         return data;
     }
 
-    async getPendingCrawlFundList() {
-        let sql = `
-            select t.*
-            from bc_fund t
-            where t.fund_buss_type_id is not null
-               or t.id in (
-                select it.fund_id
-                from bd_fund_deal it
-            )
-        `
-        let params = {};
-        let data = await this.dbService.query(sql, params);
-        return this.dbService.toEntities(BcFund, data);
-    }
-
     // 填充式保存，确保每个时间都有数据
     async savePriceEntity(fund: BcFund, entities: BdFundPrice[] = [],
-                                 start: Moment, end: Moment) {
+                          start: Moment, end: Moment) {
         Assert.hasText(fund.id, "fund id is null");
         start = start.startOf("day");
         end = end.startOf("day");
