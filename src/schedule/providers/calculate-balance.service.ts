@@ -1,18 +1,16 @@
 import {BcCard} from "../../database";
-import {Inject, Injectable} from "@nestjs/common";
-import {DbService} from "../../service/db";
-import {LoggerService} from "../../service/logger";
-import {Schedule} from "../schedule.domain";
+import {BaseSchedule} from "../schedule.domain";
+import {Interval} from "@nestjs/schedule";
 
-@Injectable()
-export class CalculateBalanceService implements Schedule {
-    @Inject()
-    private readonly dbService:DbService;
-    @Inject()
-    private readonly loggerService: LoggerService;
+export class CalculateBalanceService extends BaseSchedule {
+    getScheduleName(): string {
+        return "计算（银行卡余额）";
+    }
 
-    subscribe = async () => {
+    @Interval(60 * 1000)
+    async subscribe() {
         try {
+            this.log("开始");
             const data: any[] = await this.dbService.query(`
               select t.card_id as cardId,
                      round(sum(t.money),2) as money
@@ -33,10 +31,10 @@ export class CalculateBalanceService implements Schedule {
                 bcCard.updateTime = new Date();
                 await bcCard.save();
             }
-            this.loggerService.scheduleLogger.verbose( "CalculateBalance success");
+            this.log("结束");
         } catch (e) {
-            this.loggerService.scheduleLogger.error("CalculateBalance error " + e.message);
-            throw e;
+            this.log("失败", e);
         }
     }
+
 }

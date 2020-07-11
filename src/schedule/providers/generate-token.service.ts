@@ -1,24 +1,21 @@
 import {LessThanOrEqual} from "typeorm";
 import {BcToken} from "../../database";
 import {Assert} from "../../utils/Assert";
-import {HttpService, Inject, Injectable} from "@nestjs/common";
-import {DbService} from "../../service/db";
-import {LoggerService} from "../../service/logger";
-import {Schedule} from "../schedule.domain";
+import {BaseSchedule} from "../schedule.domain";
+import {Interval} from "@nestjs/schedule";
 
-@Injectable()
-export class GenerateTokenService implements Schedule{
-    @Inject()
-    private readonly dbService: DbService;
-    @Inject()
-    private readonly loggerService: LoggerService;
-    @Inject()
-    private readonly httpService: HttpService
-
+export class GenerateTokenService extends BaseSchedule {
     private static EXPIRES_THRESHOLD = 20 * 60 * 1000;
 
-    subscribe = async () => {
+    getScheduleName(): string {
+        return "获取(微信企业号Token)"
+    }
+
+    @Interval(60 * 1000)
+    async subscribe() {
+        if (!this.isProd()) return;
         try {
+            this.log("开始");
             const tokenEntityList = await this.dbService.find(BcToken, {
                 where: {
                     expiresIn: LessThanOrEqual(new Date(Date.now() - GenerateTokenService.EXPIRES_THRESHOLD)),
@@ -27,14 +24,14 @@ export class GenerateTokenService implements Schedule{
             for (const entity of tokenEntityList) {
                 await this.refreshQYWeChat(entity);
             }
-            this.loggerService.scheduleLogger.verbose("TokenSchedule success");
+            this.log("结束");
         } catch (e) {
-            this.loggerService.scheduleLogger.error("TokenSchedule error " + e.message);
-            throw e;
+            this.log("失败", e);
         }
     }
 
     async refreshQYWeChat(tokenEntity: BcToken) {
+        this.logItem(tokenEntity.agentId + "", "开始");
         const {secret, corpId} = tokenEntity;
         let url = `https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=${corpId}&corpsecret=${secret}`;
         let config = {
@@ -48,8 +45,9 @@ export class GenerateTokenService implements Schedule{
             tokenEntity.accessToken = data["access_token"];
             tokenEntity.expiresIn = new Date(data["expires_in"] * 1000 + Date.now());
             await tokenEntity.save();
+            this.logItem(tokenEntity.agentId + "", "结束");
         } catch (e) {
-            this.loggerService.scheduleLogger.error("TokenSchedule 企业微信token获取失败 " + e.message);
+            this.logItem(tokenEntity.agentId + "", "失败", e);
         }
     }
 }

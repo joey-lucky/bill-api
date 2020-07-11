@@ -1,21 +1,17 @@
 import {BcToken, BcUser, BdSendMessage} from "../../database";
 import {Assert} from "../../utils/Assert";
-import {HttpService, Inject, Injectable} from "@nestjs/common";
-import {DbService} from "../../service/db";
-import {LoggerService} from "../../service/logger";
-import {Schedule} from "../schedule.domain";
+import {BaseSchedule} from "../schedule.domain";
+import {Interval} from "@nestjs/schedule";
 
-@Injectable()
-export class SendMessageService implements Schedule {
-    @Inject()
-    private readonly dbService: DbService;
-    @Inject()
-    private readonly loggerService: LoggerService;
-    @Inject()
-    private readonly httpService: HttpService
+export class SendMessageService extends BaseSchedule {
+    getScheduleName(): string {
+        return "消息推送(企业微信)"
+    }
 
-    subscribe = async () => {
+    @Interval(60 * 1000)
+    async subscribe() {
         try {
+            this.log("开始")
             const entityList: BdSendMessage[] = await this.dbService.find(BdSendMessage, {
                 where: {
                     sendStatus: "0",
@@ -24,10 +20,9 @@ export class SendMessageService implements Schedule {
             for (const entity of entityList) {
                 await this.sendMessage(entity);
             }
-            this.loggerService.scheduleLogger.verbose("SendMessageSchedule success");
+            this.log("结束")
         } catch (e) {
-            this.loggerService.scheduleLogger.verbose("SendMessageSchedule error " + e.message);
-            throw e;
+            this.log("失败", e)
         }
     }
 
@@ -63,7 +58,7 @@ export class SendMessageService implements Schedule {
             await entity.save();
         } catch (e) {
             entity.errorCode = "0";
-            this.loggerService.scheduleLogger.error("SendMessageSchedule 消息发送失败 " + entity.id + e.message);
+            this.logItem(entity.id,"失败")
         }
         entity.sendStatus = "1";
         entity.sendTime = new Date();

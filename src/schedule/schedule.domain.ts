@@ -1,6 +1,7 @@
-import {HttpService, Inject} from "@nestjs/common";
+import {HttpService, Inject, Injectable} from "@nestjs/common";
 import {LoggerService} from "../service/logger";
 import {DbService} from "../service/db";
+import {ConfigService} from "../service/config";
 
 export interface Schedule {
     subscribe(): Promise<any>;
@@ -15,6 +16,12 @@ export abstract class BaseSchedule implements Schedule {
     protected readonly dbService: DbService;
     @Inject()
     protected readonly loggerService: LoggerService;
+    @Inject()
+    protected readonly configService: ConfigService;
+
+    isProd():boolean{
+        return this.configService.isProd();
+    }
 
     abstract subscribe(): Promise<any>;
 

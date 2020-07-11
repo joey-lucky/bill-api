@@ -1,26 +1,37 @@
 import {BaseSchedule} from "../schedule.domain";
-import {HttpService, Inject} from "@nestjs/common";
 import {BcFund} from "../../database";
-import {DbService} from "../../service/db";
-import {LoggerService} from "../../service/logger";
+import {Cron, Timeout} from "@nestjs/schedule";
 
 export class CrawlFundConfigService extends BaseSchedule {
     getScheduleName(): string {
         return "爬数据(基金列表)"
     }
 
+    @Cron("0 0 0 * * *")
+    async schedule1() {
+        await this.subscribe();
+    }
+
+    @Timeout(1000)
+    async schedule2() {
+        await this.subscribe();
+    }
+
     async subscribe(): Promise<any> {
-        this.log("开始")
-        this.loggerService.scheduleLogger.verbose(`爬取基金列表\t开始`);
-        let str = await this.crawlRemoteData();
-        let entities = await this.dataToEntity(str);
-        this.log("数量：" + entities.length);
-        let needSaveEntities =await this.getNeedInsertEntities(entities);
-        this.log("需要新增数量：" + needSaveEntities.length);
-        for (let item of needSaveEntities) {
-            await item.save();
+        try{
+            this.log("开始")
+            let str = await this.crawlRemoteData();
+            let entities = await this.dataToEntity(str);
+            this.log("数量：" + entities.length);
+            let needSaveEntities =await this.getNeedInsertEntities(entities);
+            this.log("需要新增数量：" + needSaveEntities.length);
+            for (let item of needSaveEntities) {
+                await item.save();
+            }
+            this.log("结束")
+        }catch (e) {
+            this.log("失败", e);
         }
-        this.log("结束")
     }
 
     // 将html解析成entity
@@ -48,7 +59,7 @@ export class CrawlFundConfigService extends BaseSchedule {
     async crawlRemoteData(): Promise<string> {
         const completeUrl = "http://fund.jrj.com.cn/json/netvaluelist/open?openFundType=1&manaCode=0&pageSize=999999&currentPage=1&sortType=6&order=1&obj=netvaluelist";
         const config = {headers: {'Content-Type': 'text/html; charset=utf-8'}};
-        this.loggerService.scheduleLogger.verbose("CrawlFundPriceService " + completeUrl);
+        this.log(completeUrl);
         const {data} = await this.httpService.get(completeUrl, config).toPromise();
         return data;
     }

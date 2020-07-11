@@ -1,9 +1,10 @@
 import {BaseSchedule} from "../schedule.domain";
 import {BcFund, BdFundDeal, BdFundPrice} from "../../database";
 import NP from "number-precision";
-import {Timeout} from "@nestjs/schedule";
 import {Inject} from "@nestjs/common";
 import {FundService} from "../../controller/invest/fund/fund.service";
+import {Cron} from "@nestjs/schedule";
+import Timeout = NodeJS.Timeout;
 
 export class CompleteBuyFundService extends BaseSchedule {
     @Inject()
@@ -13,8 +14,11 @@ export class CompleteBuyFundService extends BaseSchedule {
         return "完善数据(买入记录)";
     }
 
-    // @Cron("0 0 3 * * *")
-    @Timeout(1000)
+    @Cron("0 0 3 * * *")
+    async schedule() {
+        await this.subscribe();
+    }
+
     async subscribe(): Promise<any> {
         let pendingCompleteList = await this.dbService.find(BdFundDeal, {where: {dataStatus: "0"}});
         this.log("待处理数量：" + pendingCompleteList.length)

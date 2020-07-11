@@ -1,11 +1,10 @@
 import {BaseSchedule} from "../schedule.domain";
-import {BcFund, BdFundDeal, BdFundDealSell, BdFundPrice} from "../../database";
-import {Assert} from "../../utils/Assert";
+import {BcFund, BdFundDeal, BdFundDealSell} from "../../database";
 import NP from "number-precision";
-import {Inject} from "@nestjs/common";
-import moment = require("moment");
-import {Timeout} from "@nestjs/schedule";
+import {Inject, Injectable} from "@nestjs/common";
 import {FundService} from "../../controller/invest/fund/fund.service";
+import moment = require("moment");
+import {Cron} from "@nestjs/schedule";
 
 /**
  * 自动完善卖出记录
@@ -19,8 +18,11 @@ export class CompleteSellFundService extends BaseSchedule {
         return "完善数据(卖出记录)";
     }
 
-    // @Cron("0 0 3 * * *")
-    @Timeout(1000)
+    @Cron("0 0 3 * * *")
+    async schedule() {
+        await this.subscribe();
+    }
+
     async subscribe(): Promise<any> {
         let pendingCompleteList: BdFundDealSell[] = await this.getPendingFundList();
         this.log("待处理数量：" + pendingCompleteList.length)

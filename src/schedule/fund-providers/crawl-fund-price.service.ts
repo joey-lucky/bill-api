@@ -2,10 +2,11 @@ import {BaseSchedule} from "../schedule.domain";
 import * as moment from "moment";
 import {Moment} from "moment";
 import {toGetUrl} from "../../utils/url.utils";
-import {Timeout} from "@nestjs/schedule";
 import {BcFund, BdFundPrice} from "../../database";
 import * as cheerio from "cheerio";
 import {Assert} from "../../utils/Assert";
+import {Injectable} from "@nestjs/common";
+import {Cron, Timeout} from "@nestjs/schedule";
 
 export class CrawlFundPriceService extends BaseSchedule {
     static DEF_START_TIME: Moment = moment("2010-01-01");
@@ -14,8 +15,16 @@ export class CrawlFundPriceService extends BaseSchedule {
         return "爬数据(基金净值)"
     }
 
-    // @Cron("0 0 3 * * *")
+    @Cron("0 0 1 * * *")
+    async schedule1() {
+        await this.subscribe();
+    }
+
     @Timeout(1000)
+    async schedule2() {
+        await this.subscribe();
+    }
+
     async subscribe(): Promise<any> {
         const fundList = await this.getPendingCrawlFundList();
         this.log("待爬基金数：" + fundList.length);

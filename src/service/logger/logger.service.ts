@@ -13,24 +13,24 @@ class CommonLogger implements NestService {
         this.logger = getLogger(loggerName);
     }
 
-    error(message: any, trace?: string, context?: string): any {
-        return this.logger.error(`${message}`, trace, context);
+    error(message: any, trace?: string): any {
+        return this.logger.error(`${message}`, trace);
     }
 
-    log(message: any, context?: string): any {
-        return this.logger.info(`${message}`, context);
+    log(message: any): any {
+        return this.logger.info(`${message}`);
     }
 
-    warn(message: any, context?: string): any {
-        return this.logger.warn(`${message}`, context);
+    warn(message: any): any {
+        return this.logger.warn(`${message}`);
     }
 
-    debug(message: any, context?: string): any {
-        return this.logger.debug(`${message}`, context);
+    debug(message: any): any {
+        return this.logger.debug(`${message}`);
     }
 
-    verbose(message: any, context?: string): any {
-        return this.logger.trace(`${message}`, context);
+    verbose(message: any): any {
+        return this.logger.trace(`${message}`);
     }
 }
 
@@ -91,8 +91,8 @@ class DbLogger implements TypeOrmLogger {
 
 @Injectable()
 export class LoggerService {
-    public readonly scheduleLogger;
-    public readonly requestLogger;
+    public readonly scheduleLogger:CommonLogger;
+    public readonly requestLogger:CommonLogger;
     public readonly dbLogger;
 
     constructor() {

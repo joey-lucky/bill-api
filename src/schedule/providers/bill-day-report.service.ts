@@ -1,19 +1,17 @@
 import * as moment from "moment";
 import {BcUser, BdSendMessage} from "../../database";
-import {Inject, Injectable} from "@nestjs/common";
-import {DbService} from "../../service/db";
-import {LoggerService} from "../../service/logger";
-import {Schedule} from "../schedule.domain";
+import {BaseSchedule} from "../schedule.domain";
+import {Cron} from "@nestjs/schedule";
 
-@Injectable()
-export class BillDayReportService implements Schedule {
-    @Inject()
-    private readonly dbService: DbService;
-    @Inject()
-    private readonly loggerService: LoggerService;
+export class BillDayReportService extends BaseSchedule {
+    getScheduleName(): string {
+        return "生成(账单日报)";
+    }
 
-    subscribe = async () => {
+    @Cron("0 0 9 * * *")
+    async subscribe() {
         try {
+            this.log("开始");
             const start = moment().add(-1, "day").format("YYYY-MM-DD");
             const end = moment().format("YYYY-MM-DD");
             const data: any[] = await this.dbService.query(`
@@ -41,10 +39,9 @@ export class BillDayReportService implements Schedule {
                 entity.msgContent = msgContent;
                 await entity.save();
             }
-            this.loggerService.scheduleLogger.verbose("[schedule]", "BillDayReportSchedule success");
+            this.log("结束");
         } catch (e) {
-            this.loggerService.scheduleLogger.error("[schedule]", "BillDayReportSchedule error " + e.message);
-            throw e;
+            this.log("失败", e);
         }
     }
 }
