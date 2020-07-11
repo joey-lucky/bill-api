@@ -99,6 +99,7 @@ export class LoggerService {
     constructor() {
         configure({
             pm2: true,
+            pm2InstanceVar: 'INSTANCE_ID',
             appenders: {
                 console: {
                     type: 'console',
