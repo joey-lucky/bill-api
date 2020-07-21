@@ -131,18 +131,18 @@ export class LoggerService {
                     appenders: ['console'],
                     level: 'all'
                 },
-                schedule:{
-                    appenders: ['console', "scheduleFile"],
-                    level: 'all'
-                },
-                request:{
-                    appenders: ['console', "requestFile"],
-                    level: 'all'
-                }        ,
-                database:{
-                    appenders: ['console', "databaseFile"],
-                    level: 'all'
-                }
+                // schedule:{
+                //     appenders: ['console', "scheduleFile"],
+                //     level: 'all'
+                // },
+                // request:{
+                //     appenders: ['console', "requestFile"],
+                //     level: 'all'
+                // }        ,
+                // database:{
+                //     appenders: ['console', "databaseFile"],
+                //     level: 'all'
+                // }
             }
         });
         this.scheduleLogger = new CommonLogger("schedule");
