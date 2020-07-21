@@ -1,18 +1,18 @@
 import {BaseSchedule} from "../schedule.domain";
 import {BcFund} from "../../database";
-import {Cron, Timeout} from "@nestjs/schedule";
+// import {Cron, Timeout} from "@nestjs/schedule";
 
 export class CrawlFundConfigService extends BaseSchedule {
     getScheduleName(): string {
         return "爬数据(基金列表)"
     }
 
-    @Cron("0 0 0 * * *")
+    // @Cron("0 0 0 * * *")
     async schedule1() {
         await this.subscribe();
     }
 
-    @Timeout(1000)
+    // @Timeout(1000)
     async schedule2() {
         await this.subscribe();
     }

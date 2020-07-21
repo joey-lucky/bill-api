@@ -7,6 +7,7 @@ import * as cheerio from "cheerio";
 import {Assert} from "../../utils/Assert";
 import {Cron, Timeout} from "@nestjs/schedule";
 import {IsNull, Not} from "typeorm";
+import {sleep} from "../../utils/promise.utils";
 
 export class CrawlFundPriceService extends BaseSchedule {
     getScheduleName(): string {
@@ -124,6 +125,7 @@ export class CrawlFundPriceService extends BaseSchedule {
         let completeUrl = toGetUrl(url, params);
         this.logItem(fund.name, completeUrl + ` (${Date.now() - start}ms)`,)
         const {data} = await this.httpService.get(completeUrl, config).toPromise();
+        await sleep(2000);
         return data;
     }
 
