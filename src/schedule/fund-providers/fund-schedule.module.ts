@@ -4,6 +4,7 @@ import {CompleteBuyFundService} from "./complete-buy-fund.service";
 import {CompleteSellFundService} from "./complete-sell-fund.service";
 import {CrawlFundConfigService} from "./crawl-fund-config.service";
 import {CrawlFundPriceService} from "./crawl-fund-price.service";
+import {CalculateMarketValueService} from "./calculate-market-value.service";
 
 
 @Module({
@@ -12,6 +13,7 @@ import {CrawlFundPriceService} from "./crawl-fund-price.service";
         CompleteSellFundService,
         CrawlFundConfigService,
         CrawlFundPriceService,
+        CalculateMarketValueService,
     ],
     imports: [
         HttpModule,

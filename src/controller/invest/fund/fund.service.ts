@@ -52,6 +52,26 @@ export class FundService extends BaseService implements RestService {
         return this.dbService.toEntity(BdFundPrice, model)
     }
 
+    public async getLatestPrice(fundId: string){
+        let sql = `
+        select t.*
+        from bd_fund_price t
+        where t.fund_id = @fundId
+          and t.date_time = (
+            select max(it.date_time)
+            from bd_fund_price it
+            where it.fund_id = @fundId
+              and it.price <> -1
+        )
+        `
+        let params = {
+            fundId: fundId,
+        };
+        let [model] = await this.dbService.query(sql, params);
+        Assert.notNull(model, "净值未更新");
+        return this.dbService.toEntity(BdFundPrice, model)
+    }
+
     public async assertSellCountValid(fundDealSell:BdFundDealSell){
         // language=MySQL
         let sql = `

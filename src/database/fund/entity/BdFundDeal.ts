@@ -35,7 +35,7 @@ export class BdFundDeal extends BaseEntity {
     status: string;
 
     @Column({nullable: false, type: "double", default: 0, comment: "合计卖出份额"})
-    totalSellCount: string;
+    totalSellCount: number;
 
     @Column({nullable: false, type: "double", default: 0, comment: "合计卖出金额"})
     totalSellMoney: number;
