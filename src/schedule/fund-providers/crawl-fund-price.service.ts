@@ -141,8 +141,10 @@ export class CrawlFundPriceService extends BaseSchedule {
             timeSet.add(item.dateTime.getTime());
         }
         let curr = start.clone();
+        let threeDayAgo = moment().add(-3, "day").startOf("day").toDate().getTime();
         while (!curr.isAfter(end)) {
-            if (!timeSet.has(curr.toDate().getTime())) {
+            let currTime = curr.toDate().getTime();
+            if (!timeSet.has(currTime) && currTime < threeDayAgo) {
                 let entity = new BdFundPrice();
                 entity.dateTime = curr.toDate();
                 saveData.push(entity);

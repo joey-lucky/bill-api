@@ -32,19 +32,16 @@ export class FundService extends BaseService implements RestService {
 
     public async getPrice(fundId: string, applyDate: Date): Promise<BdFundPrice> {
         let sql = `
-                    select t.*
-                    from bd_fund_price t
-                    where t.fund_id = @fundId
-                      and t.date_time > str_to_date(@applyDate, '%Y-%m-%d %H:%i:%s')
-                      and t.price <> -1
-                      and not exists(
-                            select 1
-                            from bd_fund_price it
-                            where it.fund_id = t.fund_id
-                              and it.date_time < t.date_time
-                              and it.date_time > str_to_date(@applyDate, '%Y-%m-%d %H:%i:%s')
-                              and t.price <> -1
-                        )
+        select t.*
+        from bd_fund_price t
+        where t.fund_id = @fundId
+          and t.date_time = (
+            select min(it.date_time)
+            from bd_fund_price it
+            where it.fund_id = @fundId
+              and it.date_time > str_to_date(@applyDate, '%Y-%m-%d %H:%i:%s')
+              and it.price <> -1
+        )
         `
         let params = {
             fundId: fundId,

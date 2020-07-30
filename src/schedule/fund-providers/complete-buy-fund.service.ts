@@ -3,8 +3,7 @@ import {BcFund, BdFundDeal, BdFundPrice} from "../../database";
 import NP from "number-precision";
 import {Inject} from "@nestjs/common";
 import {FundService} from "../../controller/invest/fund/fund.service";
-import {Cron} from "@nestjs/schedule";
-import Timeout = NodeJS.Timeout;
+import {Cron, Timeout} from "@nestjs/schedule";
 
 export class CompleteBuyFundService extends BaseSchedule {
     @Inject()
@@ -16,6 +15,11 @@ export class CompleteBuyFundService extends BaseSchedule {
 
     @Cron("0 0 3 * * *")
     async schedule() {
+        await this.subscribe();
+    }
+
+    @Timeout(1000)
+    async schedule2() {
         await this.subscribe();
     }
 
