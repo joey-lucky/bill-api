@@ -1,8 +1,9 @@
 import {BdBill, BdBillView, PageInfo} from "../../database";
 import {BaseService} from "../base.service";
 import {RestService} from "../base-rest.controller";
+import * as XLSX from "xlsx";
 
-export  class BillService extends BaseService implements RestService {
+export class BillService extends BaseService implements RestService {
     public async create(data: any): Promise<any> {
         const entity: BdBill = this.parseToEntity(BdBill, data);
         entity.userId = this.getCtxUserId();
@@ -29,11 +30,42 @@ export  class BillService extends BaseService implements RestService {
         return await this.assertEntityIdExist(BdBill, id);
     }
 
+    public async getExportExcelFileBuffer(): Promise<any> {
+        let sql = `
+            select bill_type_type_value                                   as 类型,
+                   bill_type_name                                         as 账单类型,
+                   money                                                  as 金额,
+                   bill_desc                                              as 名称,
+                   date_time                                              as 日期,
+                   CONCAT(card_user_name, ' - ', card_name)               as 银行卡,
+                   CONCAT(target_card_user_name, ' - ', target_card_name) as 目标卡,
+                   user_name                                              as 用户
+            from bd_bill_view t
+            order by t.date_time desc, t.bill_type_name, t.bill_type_type_value
+        `;
+        let data = await this.dbService.query(sql);
+        let ws = XLSX.utils.json_to_sheet(data, {
+            header: [
+                "类型",
+                "账单类型",
+                "金额",
+                "名称",
+                "日期",
+                "银行卡",
+                "目标卡",
+                "用户"
+            ]
+        });
+        let wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "sheet1");
+        return XLSX.write(wb, {type: 'buffer', bookType: "xlsx"});
+    }
+
     public async index(params: any): Promise<any[]> {
         let whereCondition = await this.toWhereCondition(params);
         return await this.dbService.createQueryBuilder(BdBillView, "t")
             .where(whereCondition.where, whereCondition.params)
-            .orderBy("t.date_time","DESC")
+            .orderBy("t.date_time", "DESC")
             .getMany();
     }
 
@@ -41,11 +73,11 @@ export  class BillService extends BaseService implements RestService {
         let whereCondition = await this.toWhereCondition(params);
         return await this.dbService.createPageQueryBuilder(BdBillView, "t")
             .where(whereCondition.where, whereCondition.params)
-            .orderBy("t.date_time","DESC")
+            .orderBy("t.date_time", "DESC")
             .getPageData(pageInfo);
     }
 
-    private async toWhereCondition(queryParam:any = {}): Promise<{ where: string, params: any }> {
+    private async toWhereCondition(queryParam: any = {}): Promise<{ where: string, params: any }> {
         let where = " 1=1 ";
         const params: BdBillView & QueryParams = {...queryParam};
         if (params.id) {
@@ -94,12 +126,14 @@ export  class BillService extends BaseService implements RestService {
         }
         return {where, params};
     }
+
+
 }
 
 interface QueryParams {
     keyword?: string;
     cardIdOrTargetCardId: string;
-    dateTimeMoreThanOrEqual:string,
-    dateTimeLessThanOrEqual:string,
+    dateTimeMoreThanOrEqual: string,
+    dateTimeLessThanOrEqual: string,
     dateTime: string | [string, string],
 }
