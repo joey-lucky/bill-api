@@ -1,6 +1,5 @@
-import {BaseView} from "../../base";
 import {Column, ViewEntity} from "../../decorator";
-import {BcFund} from "../entity/BcFund";
+import {BcFund} from "../..";
 
 @ViewEntity({
     expression: `

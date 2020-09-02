@@ -27,6 +27,7 @@ import {BdFundDealView} from "./fund/view/BdFundDealView";
 import {BdFundDealSellView} from "./fund/view/BdFundDealSellView";
 import {BdFundPriceView} from "./fund/view/BdFundPriceView";
 import {BdFundDealDividend} from "./fund/entity/BdFundDealDividend";
+import {BdFundDealDividendView} from "./fund/view/BdFundDealDividendView";
 export * from "./base";
 
 export const tables = [
@@ -61,7 +62,8 @@ export const views = [
     BcFundView,
     BdFundDealView,
     BdFundDealSellView,
-    BdFundPriceView
+    BdFundPriceView,
+    BdFundDealDividendView
 ];
 
 export {

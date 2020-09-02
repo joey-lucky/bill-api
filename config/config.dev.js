@@ -6,7 +6,7 @@ module.exports = {
         username: 'root',
         password: '123456',
         database: 'bill_dev',
-        synchronize: false,
+        synchronize: true,
     },
     schedule:false,
 };
