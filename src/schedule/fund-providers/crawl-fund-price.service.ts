@@ -14,12 +14,12 @@ export class CrawlFundPriceService extends BaseSchedule {
         return "爬数据(基金净值)"
     }
 
-    @Cron("0 0 1 * * *")
+    // @Cron("0 0 1 * * *")
     async schedule1() {
         await this.subscribe();
     }
 
-    @Timeout(1000)
+    // @Timeout(1000)
     async schedule2() {
         await this.subscribe();
     }

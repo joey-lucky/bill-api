@@ -13,12 +13,12 @@ export class CompleteBuyFundService extends BaseSchedule {
         return "完善数据(买入记录)";
     }
 
-    @Cron("0 0 3 * * *")
+    // @Cron("0 0 3 * * *")
     async schedule() {
         await this.subscribe();
     }
 
-    @Timeout(1000)
+    // @Timeout(1000)
     async schedule2() {
         await this.subscribe();
     }

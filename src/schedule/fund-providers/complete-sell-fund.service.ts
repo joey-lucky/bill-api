@@ -18,7 +18,7 @@ export class CompleteSellFundService extends BaseSchedule {
         return "完善数据(卖出记录)";
     }
 
-    @Cron("0 0 3 * * *")
+    // @Cron("0 0 3 * * *")
     async schedule() {
         await this.subscribe();
     }

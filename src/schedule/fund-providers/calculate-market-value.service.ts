@@ -17,12 +17,12 @@ export class CalculateMarketValueService extends BaseSchedule {
         return "计算(基金市值)";
     }
 
-    @Cron("0 0 4 * * *")
+    // @Cron("0 0 4 * * *")
     async schedule() {
         await this.subscribe();
     }
 
-    @Timeout(1000)
+    // @Timeout(1000)
     async schedule2() {
         await this.subscribe();
     }
