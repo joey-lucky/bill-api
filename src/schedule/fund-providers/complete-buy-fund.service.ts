@@ -14,7 +14,7 @@ export class CompleteBuyFundService extends BaseSchedule {
     }
 
     // @Cron("0 0 3 * * *")
-    @Timeout(1000)
+    // @Timeout(1000)
     async subscribe(): Promise<any> {
         let pendingCompleteList = await this.dbService.find(BdFundDeal, {where: {dataStatus: "0"}});
         this.log("待处理数量：" + pendingCompleteList.length)

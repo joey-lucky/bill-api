@@ -15,7 +15,7 @@ export class CrawlFundPriceService extends BaseSchedule {
     }
 
     // @Cron("0 0 3 * * *")
-    @Timeout(1000)
+    // @Timeout(1000)
     async subscribe(): Promise<any> {
         const fundList = await this.getPendingCrawlFundList();
         this.log("待爬基金数：" + fundList.length);
