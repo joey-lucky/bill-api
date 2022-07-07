@@ -30,7 +30,7 @@
     "cheerio": "^1.0.0-rc.3",
     "jsonwebtoken": "^8.5.1",
     "log4js": "^6.3.0",
-    "moment": "^2.25.1",
+    "moment": "^2.29.4",
     "mysql": "^2.18.1",
     "number-precision": "^1.4.0",
     "passport-jwt": "^4.0.0",
