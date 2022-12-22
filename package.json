@@ -28,7 +28,7 @@
     "@nestjs/typeorm": "^7.0.0",
     "axios": "^0.19.2",
     "cheerio": "^1.0.0-rc.3",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "log4js": "^6.3.0",
     "moment": "^2.25.1",
     "mysql": "^2.18.1",
